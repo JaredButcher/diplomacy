@@ -1,0 +1,1 @@
+INSERT INTO user (username, hash, salt) VALUES ("Admin", '', '');
