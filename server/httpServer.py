@@ -1,9 +1,11 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from http import cookies
 import mimetypes
-#import os.path
 from socketserver import ThreadingMixIn
 from concurrent.futures import ThreadPoolExecutor
+from threading import RLock
+import random
+import string
 
 def start(port, maxThreads):
     """Start the http server, blocks thread until program stops
@@ -13,7 +15,7 @@ def start(port, maxThreads):
             maxThreads (int): Maximum number of threads to make
     """
     serverAddress = ('', port)
-    httpd = ThreadPoolHTTPServer(serverAddress, BaseHTTPRequestHandler, maxThreads=maxThreads)
+    httpd = ThreadPoolHTTPServer(serverAddress, HTTPHandler, maxThreads=maxThreads)
     httpd.serve_forever()
 
 class ThreadPoolHTTPServer(ThreadingMixIn, HTTPServer):
@@ -31,22 +33,86 @@ class ThreadPoolHTTPServer(ThreadingMixIn, HTTPServer):
 class HTTPHandler(BaseHTTPRequestHandler):
     '''Handles http requests'''
 
+    defaultTitle = "Diplomacy"
+    contentLocation = "server/website/"
+    sessionData = {}
+    sessionDataLock = RLock()
+
     def do_HEAD(self):
-        pass
+        self.mime = self.findMimeType(self.path)
+        self.send_response(200)
+        self.send_header("Content-type", self.mime)
+        self._handleSession()
+        self.end_headers()
 
     def do_GET(self):
         self.statusCode = 200
-        self.mime = self.findMimeType(self.path)
-        self.sendCookies = True
-        body = bytes(self.route(), "utf8")
+        self.usingSession = True
+        body = bytes(self._route(self.path), "utf8")
         self.send_response(self.statusCode)
         self.send_header("Content-type", self.mime)
-        if self.sendCookies: self.handleCookies()
+        if self.usingSession: self._handleSession()
         self.end_headers()
         self.wfile.write(body)
 
     def do_POST(self):
         pass
+
+    def _route(self, path):
+        '''Parse url and create the response body
+        Args:
+            path (string): url
+        Returns: 
+            (string): requested page
+        '''
+        path = path.split('/')
+        if len(path) >= 2:
+            if path[1] == 'home' or path[1] == '':
+                if len(path) == 2 or path[2] == "" or path[2] =='index':
+                    return self._layout(self._readFile("home/index.html"))
+                elif path[2] =='about':
+                    return self._layout(self._readFile("home/about.html"))
+                else:
+                    return self._route('error/404')
+            elif path[1] == 'user':
+                return self._route('error/404')
+            elif path[1] == 'static':
+                self.usingSession = False
+                path = self.path[1:]
+                try:
+                    fileContent = self._readFile(path)
+                    self.mime = self.findMimeType(path)
+                    return fileContent
+                except (IOError, KeyError) as e:
+                    print("error: " + path)
+                    return self._route("error/404")
+            else:
+                try:
+                    self.statusCode = int(path[2])
+                except (ValueError, IndexError) as e:
+                    self.statusCode = 404
+                fileContent = self._readFile("home/error.html")
+                fileContent = fileContent.format(error = self.statusCode)
+                return self._layout(fileContent)
+        else:
+            return self._route("error/404")
+
+    def _layout(self, pageContent = None, pageTitle = None):
+        '''Puts page content into a basic html frame that includes static features such as the navbar, and default css
+
+        Args:
+            pageContent (string): page content to put into the frame
+            pageTitle (string): html title page should have
+
+        Returns:
+            (string): compeated html page to send to client
+        '''
+        pageTitle = pageTitle or self.defaultTitle
+        layoutFile = self._readFile("layout.html")
+        page = layoutFile.format(title = pageTitle, content = pageContent)
+        self.mime = 'text/html'
+        return page
+
 
     def findMimeType(self, path):
         '''Try to find the mime type of the request
@@ -58,111 +124,35 @@ class HTTPHandler(BaseHTTPRequestHandler):
         '''
         if not mimetypes.inited:
             mimetypes.init() #try to read system mime types
-            mimetypes.add_type('application/octet-stream', '') #add a default type
+            mimetypes.add_type('text/html', '') #add a default type
         fileType, encoding = mimetypes.guess_type(path)
         if fileType is None:
             return mimetypes.types_map['']
         return fileType
 
-"""
-class HTTPHandler(BaseHTTPRequestHandler):
-
-    content = "Server/Website/"
-    defaultTitle = "Day of Sagittarius III"
-    paths = {"home": "cHome", "user":None, "static":"cStatic", "sagittarius":"cSag"}
-
-    def do_HEAD(self):
-        self.send_response(200)
-        self.send_header("Content-type", "text/html")
-        self.handleCookies()
-        self.end_headers()
-    def do_GET(self):
-        self.statusCode = 200
-        self.mime = "text/html"
-        self.sendCookies = True
-        body = bytes(self.route(), "utf8")
-        self.send_response(self.statusCode)
-        self.send_header("Content-type", self.mime)
-        if self.sendCookies: self.handleCookies()
-        self.end_headers()
-        self.wfile.write(body)
-
-    def handleCookies(self):
-        global dataStor
-        cook = cookies.SimpleCookie()
+    def _handleSession(self):
+        '''Handles reading and createing cookies for sessions
+        '''
+        cookie = cookies.SimpleCookie()
         if "Cookie" in self.headers:
-            cook.load(self.headers["Cookie"])
-            if "session" in cook:
-                print("session")
-                self.user = dataStor.getUser(cook["session"].value)
-                if self.user != None:
-                    print(self.user)
+            cookie.load(self.headers["Cookie"])
+            if "session" in cookie:
+                if cookie['session'].value in self.sessionData:
+                    print("found")
                     return
-        user = dataStor.makeUser()
-        cook["session"] = user.getSession()
-        cook["session"]["path"] = "/"
-        cook["session"]["max-age"] = 259200
-        self.send_header("Set-Cookie", str(cook["session"])[12:])
-        self.user = user
+        key = ''.join(random.choice(string.ascii_letters + string.digits) for x in range(32))
+        with self.sessionDataLock:
+            self.sessionData[key] = {}
+        cookie["session"] = key
+        cookie["session"]["path"] = "/"
+        cookie["session"]["max-age"] = 259200
+        self.send_header('Set-Cookie', str(cookie)[12:])
 
     def log_message(self, format, *args):
         return
-    
-    def route(self):
-        path = self.path.split('/')
-        if self.path == "/":
-            return self.cHome()
-        elif path[1] in self.paths:
-            if len(path) == 2 or path[2] == "":
-                return getattr(self, self.paths[path[1]])()
-            else:
-                return getattr(self, self.paths[path[1]])(path[2])
-        else:
-            self.statusCode = 404
-            return self.cHome("error")
 
-    def cHome(self, view = "index"):
-        if view == "index":
-            return self.layout(self.readFile("home/index.html"))
-        elif view == "about":
-            return self.layout(self.readFile("home/about.html"))
-        else:
-            fContent = self.readFile("home/error.html")
-            if(self.statusCode == 200):
-                self.statusCode = 403
-            fContent = fContent.format(error = self.statusCode)
-            return self.layout(fContent)
-
-    def cSag(self, view = "game"):
-        if view == "game":
-            return self.layout(self.readFile("sagittarius/game.html"))
-        else:
-            return self.cHome("error")
-
-    def cStatic(self, unused):
-        self.sendCookies = False
-        path = self.path[len("/"):]
-        try:
-            print(path + str(path.rindex(".") + 1))
-            fContent = self.readFile(path)
-            self.mime = self.mimes[path[path.rindex(".") + 1:]]
-            return fContent
-        except (IOError, KeyError) as e:
-            print("error: " + path)
-            return self.cHome("error")
-
-    def readFile(self, fPath):
-        with open(self.content + fPath) as f:
-            fContent = f.read()
+    def _readFile(self, filePath):
+        with open(self.contentLocation + filePath) as f:
+            fileContent = f.read()
             f.close()
-            return fContent
-
-    def layout(self, pContent = None, pTitle = None):
-        pTitle = pTitle or self.defaultTitle
-        with open(self.content + "layout.html") as f:
-                fLayout = f.read()
-                f.close()
-                fLayout = fLayout.format(title = pTitle, content = pContent)
-                return fLayout
-"""
-start(80)
+            return fileContent
