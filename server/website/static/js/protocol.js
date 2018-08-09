@@ -26,7 +26,7 @@ const ACTION = {
     QUIT: '1', //C->S GAME field contains id of game to leave
     CREATE_GAME: '2', //C->S GAME field contains object with the TIMER_DURATIONS object, MAX_PLAYERS, NAME, MAP, and optional PASSWORD
     UPDATE: '3',
-        //C->S if game is set change game parameters, if player is set either player parameteres are to be changed or orders are being sent
+        //C->S if game is set change game parameters, if player is set either player parameteres are to be changed or orders are being sent or the session id is being sent
             //NOTE: id of playing making commands is not sent, it is known on server by session
         //S->C Update of gamestate from server some, all, or none of the game, player, unit, etc... infomation may be changed
     CHAT: '4',
@@ -76,7 +76,7 @@ const GAME = {
  */
 const PLAYER = {
     USER: '0', //Object of USER or 0 if just a placeholder player
-    COUNTRY: '1', //Country or contries player represents
+    COUNTRY: '1', //[] Country or contries player represents
     UNITS: '2', //List of unit objects
     TERRITORIES: '3', //List of supply centers held and only supply centers
     READY: '4' //Specifies that player is ready for game to start or next turn
