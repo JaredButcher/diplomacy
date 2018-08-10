@@ -12,7 +12,7 @@
 const FIELD = {
     ACTION: '0', //Contains action, only manditory field
     GAME: '1', //Can contain a game object or list of game objects
-    PLAYER: '2', //Can contain player object or play id
+    PLAYER: '2', //Can contain player object or play id or user
     ERROR: '3', //Contains error
     CHAT: '4' //Contains chat object
 }
@@ -36,9 +36,12 @@ const ACTION = {
         //C->S request list of aviable games
         //S->C GAME field contains list of aviable games that are objects containing ID, OWNER, PLAYERS as number of players, MAX_PLAYERS, NAME, and PASSWORD is set if there is a password
     ERROR: '6', //Error code
-    PREV_TURN: '7' 
+    PREV_TURN: '7', 
         //C->S GAME.TURN contains turn to view
         //S->C GAME object contains TURN, and list of all PLAYERS that each have their TERRITORIES list and UNITS list compleate with their order for that turn
+    LOGIN: '8',
+        //C->S PLAYER field will contain user with username and password
+    LOGOUT: '9'
 }
 /**
  * Enum for errors
@@ -91,7 +94,8 @@ const USER = {
     USERNAME: '1',
     NAME: '2', //optional
     EMAIL: '3', //optional
-    PHONE: '4' //optional
+    PHONE: '4', //optional
+    PASSWORD: '5'
 }
 /**
  * Enum for possable game phases

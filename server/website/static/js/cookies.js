@@ -6,6 +6,7 @@
 
  /**
   * @param {string} cookie - Name of cookie
+  * @returns {string} Value of cookie
   */
 function getCookie(cookie){
     if(navigator.cookieEnabled){
@@ -20,6 +21,7 @@ function getCookie(cookie){
     } else {
         alert("This site relies on cookies, please enable cookies.");
     }
+    console.error("Cookie " + cookie + " not found");
     return "";
 }
 

@@ -16,7 +16,9 @@ class ACTION(Enum):
     CHAT = '4',    
     LIST_GAMES = '5', 
     ERROR = '6', 
-    PREV_TURN = '7'   
+    PREV_TURN = '7'
+    LOGIN = '8'
+    LOGOUT = '9' 
 @unique
 class ERROR(Enum):
     BAD_REQUEST = '0', 
@@ -49,7 +51,8 @@ class USER(Enum):
     USERNAME = '1',
     NAME = '2', 
     EMAIL = '3', 
-    PHONE = '4' 
+    PHONE = '4',
+    PASSWORD = '5'
 @unique
 class PHASE(Enum):
     DIPLOMACY = '0', 

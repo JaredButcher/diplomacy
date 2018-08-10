@@ -6,16 +6,18 @@
 import * as PROTOCOL from "diplomacy/protocol";
 import getCookie from "diplomacy/cookies"
 
+/** Class that creates and handles a websocket connection*/
 class wsClient{
+    /**
+    * Function to call upown receiveing a valid message
+    * @callback wsClient~responseCallback
+    * @param {object} message - json object received
+    */
     /**
      * Creates a connection and client
      * @param {string} ip - server address
      * @param {integer} port - server port
-     */
-    /**
-     * Function to call upown receiveing a valid message
-     * @callback responseCallback
-     * @param {object} message - json object received
+     * @param {wsClient~responseCallback} responseCallback - Callback to handle received messages
      */
     constructor(ip, port, responseCallback){
         this.ip = ip;
@@ -25,11 +27,15 @@ class wsClient{
         this.conn.onmessage = function(message){
             try{
                 let data = JSON.parseFloat(message.data);
-            }catch(SyntaxError e){
-                res = {};
-                res[PROTOCOL.FIELD.ACTION] = PROTOCOL.ACTION.ERROR;
-                res[PROTOCOL.FIELD.ERROR] = PROTOCOL.ERROR.BAD_REQUEST;
-                this.send(res);
+            }catch(e){
+                if(typeof(e) == SyntaxError){
+                    res = {};
+                    res[PROTOCOL.FIELD.ACTION] = PROTOCOL.ACTION.ERROR;
+                    res[PROTOCOL.FIELD.ERROR] = PROTOCOL.ERROR.BAD_REQUEST;
+                    this.send(res);
+                }else{
+                    throw e;
+                }
                 return;
             }
             this.responseCallback(data);
@@ -48,7 +54,7 @@ class wsClient{
         };
     }
     /**
-     * 
+     * Send to server
      * @param {(string|object)} message - to send to server, object will be converted to json string
      */
     send(message){
