@@ -41,6 +41,7 @@ const ACTION = {
         //S->C GAME object contains TURN, and list of all PLAYERS that each have their TERRITORIES list and UNITS list compleate with their order for that turn
     LOGIN: '8',
         //C->S PLAYER field will contain user with username and password
+        //S->C Response to login request, contains user info in PLAYER field if sucessful, PLAYER field not assigned if not
     LOGOUT: '9'
 }
 /**
