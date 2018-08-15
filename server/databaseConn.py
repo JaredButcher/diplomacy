@@ -25,6 +25,9 @@ class databaseConn:
             host (string): address of database
             database (string): database to use on mysql server
     '''
+
+    REMEMBER_USER_DURATION = 20 #How long remember user cookies will be valid
+
     def __init__(self, user, password, host, database):
         self.user = user
         self.password = password
@@ -34,6 +37,8 @@ class databaseConn:
         self._connInUse = False
 
     def _hash(self, password, salt):
+        '''Compute the password hash
+        '''
         return hashlib.sha512(bytes(password, 'utf-8') + salt.to_bytes(16, byteorder='big')).hexdigest()
     
     @connect
@@ -57,8 +62,8 @@ class databaseConn:
                     acceped keywords: id(int), username(string), name(string), email(string), phone(string)
 
             Returns: [tuple]
-                list where each retured row is a tuple
-                rows include every column
+                tuples contain key and value
+                [id(int), hash(string), salt(string), username(string), name(string), email(string), phone(string)]
         '''
         query='SELECT * FROM users WHERE TRUE'
         values = []
@@ -75,6 +80,13 @@ class databaseConn:
 
     @connect
     def authUser(self, username, password):
+        '''Check if username and password match
+
+            Returns:
+                (bool) returns false on failure
+                [tuple] tuples contain key and value on success
+                    [id(int), hash(string), salt(string), username(string), name(string), email(string), phone(string)]
+        '''
         user = self.findUser(username=username)[0]
         if user['hash'] == self._hash(password, user['salt']):
             return user
@@ -83,11 +95,23 @@ class databaseConn:
 
     @connect
     def removeUser(self, id):
+        '''Delete a user from database
+
+            Args:
+                id (int): id of user to delete
+        '''
         query = 'DELETE FROM user WHERE id = %s;'
         self._cursor.execute(query, (id,))
 
     @connect
     def modifyUser(self, id, **kwargs):
+        '''Modify a user
+
+            Args:
+                id (int): user id
+                keyword args: columns to change and new values
+                    acceped keywords: id(int), username(string), name(string), email(string), phone(string)
+        '''
         query='UPDATE user SET'
         values = []
         for key in kwargs:
@@ -109,6 +133,13 @@ class databaseConn:
 
     @connect
     def addRemember(self, id):
+        '''Create and save new remember cookie
+
+            Args:
+                id (int): user id
+
+            Returns: (int) the cookie to be used
+        '''
         key = secrets.randbits(128)
         query = 'INSERT INTO rememberUser (user, cookie) VALUES (%s, %s);'
         self._cursor.execute(query, (id, key))
@@ -116,7 +147,16 @@ class databaseConn:
 
     @connect
     def checkRemember(self, key):
-        query = 'DELETE FROM rememberUser WHERE created < SUBDATE(CURDATE(), INTERVAL 20 DAY);'
+        '''Removes old remember user cookies then checks if remember user cookie is valid and if so returns the user
+
+            Args:
+                key (int): remember user cookie
+
+            Returns: [tuple]
+                tuples contain key and value for user upown success
+                [id(int), hash(string), salt(string), username(string), name(string), email(string), phone(string)]
+        '''
+        query = 'DELETE FROM rememberUser WHERE created < SUBDATE(CURDATE(), INTERVAL ' + self.REMEMBER_USER_DURATION + ' DAY);'
         self._cursor.execute(query)
         query = 'SELECT * FROM user WHERE id IN (SELECT user FROM rememberUser WHERE cookie = %s);'
         self._cursor.execute(query, (key,))

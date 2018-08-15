@@ -55,9 +55,6 @@ class HTTPHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
-    def do_POST(self):
-        pass
-
     def _route(self, path):
         '''Parse url and create the response body
         Args:

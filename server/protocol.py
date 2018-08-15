@@ -18,7 +18,8 @@ class ACTION(Enum):
     ERROR = '6', 
     PREV_TURN = '7'
     LOGIN = '8'
-    LOGOUT = '9' 
+    LOGOUT = '9'
+    REGISTER = '10'
 @unique
 class ERROR(Enum):
     BAD_REQUEST = '0', 

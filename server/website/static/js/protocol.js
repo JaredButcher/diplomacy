@@ -42,7 +42,8 @@ const ACTION = {
     LOGIN: '8',
         //C->S PLAYER field will contain user with username and password
         //S->C Response to login request, contains user info in PLAYER field if sucessful, PLAYER field not assigned if not
-    LOGOUT: '9'
+    LOGOUT: '9',
+    REGISTER: '10'
 }
 /**
  * Enum for errors
