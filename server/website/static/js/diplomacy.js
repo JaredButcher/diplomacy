@@ -4,20 +4,28 @@
  * @module diplomacy/diplomacy
  */
 
-canvas = document.getElementById("gameCanvas");
-var ctx = canvas.getContext("2d");
-ctx.beginPath();
-ctx.moveTo(100, 100);
-ctx.lineWidth = 10;
-ctx.lineCap = "round";
-ctx.lineTo(300, 100);
-ctx.moveTo(300, 100);
-ctx.lineTo(250, 150);
-ctx.moveTo(300, 100);
-ctx.lineTo(250, 50);
-ctx.stroke();
-/*ctx.lineCap = "butt";
-ctx.moveTo(300, 100);
-ctx.setLineDash([8, 4]);
-ctx.lineTo(100, 200);
-ctx.stroke();*/
+import { mapDraw } from './map.js';
+
+
+//Arrow draw test
+let map = new mapDraw("gameCanvas");
+
+map.drawLine('green', 50, 200, 150, 150);
+map.drawConvoyRoute('blue', false, 100, 100, 150, 150, 150, 400);
+map.drawConvoyRoute('green', true, 200, 450, 150, 400, 375, 350);
+map.drawArrow('red', true, 300, 300, 375, 350);
+map.drawArrow('orange', false, 300, 200, 300, 300);
+map.drawAttackSupport('orange', 400, 280, 300, 300, 300, 200);
+
+map.drawUnit('blue', false, 'F', 100, 100);
+map.drawUnit('green', false, 'A', 50, 200);
+map.drawUnit('green', false, 'F', 200, 450);
+map.drawUnit('red', false, 'A', 375, 350);
+map.drawUnit('red', true, 'A', 300, 300);
+map.drawUnit('orange', false, 'A', 400, 280);
+map.drawUnit('orange', false, 'A', 300, 200);
+
+map.drawX(100, 175);
+map.drawX(125, 125);
+map.drawX(175, 425);
+map.drawX(340, 325);

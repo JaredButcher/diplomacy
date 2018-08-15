@@ -7,8 +7,8 @@ import * as PROTOCOL from "./protocol";
 import getCookie from "./cookies"
 import { SSL_OP_NO_TICKET } from "constants";
 
-WS_PORT = 4543;
-wsClients = [];
+const WS_PORT = 4543;
+const wsClients = [];
 
 /** Class that creates and handles a websocket connection*/
 class wsClient{
