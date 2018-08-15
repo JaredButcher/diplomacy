@@ -71,8 +71,26 @@ class HTTPHandler(BaseHTTPRequestHandler):
                     return self._layout(self._readFile("home/about.html"))
                 else:
                     return self._route('error/404')
-            elif path[1] == 'user':
-                return self._route('error/404')
+            elif path[1] == 'user' and len(path) > 2:
+                if path[2] =='login':
+                    return self._layout(self._readFile("user/login.html"))
+                elif path[2] =='register':
+                    return self._layout(self._readFile("user/register.html"))
+                elif path[2] =='account':
+                    return self._layout(self._readFile("user/account.html"))
+                else:
+                    return self._route('error/404')
+            elif path[1] == 'diplomacy':
+                if len(path) == 2 or path[2] == "" or path[2] =='searchGame':
+                    return self._layout(self._readFile("diplomacy/searchGame.html"))
+                elif path[2] =='makeGame':
+                    return self._layout(self._readFile("diplomacy/makeGame.html"))
+                elif path[2] =='myGames':
+                    return self._layout(self._readFile("diplomacy/myGames.html"))
+                elif path[2] =='game':
+                    return self._layout(self._readFile("diplomacy/game.html"))
+                else:
+                    return self._route('error/404')
             elif path[1] == 'static':
                 self.usingSession = False
                 path = self.path[1:]
@@ -153,3 +171,5 @@ class HTTPHandler(BaseHTTPRequestHandler):
             fileContent = f.read()
             f.close()
             return fileContent
+
+start(1234, 2)
