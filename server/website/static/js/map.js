@@ -4,6 +4,8 @@
  * @module diplomacy/map
  */
 
+import {UNIT_TYPE} from "./protocol.js";
+
 class mapDraw{
     /**
      * Class for drawing arrows and other map elements 
@@ -174,5 +176,4 @@ class mapDraw{
     }
 
 }
-
 export {mapDraw};

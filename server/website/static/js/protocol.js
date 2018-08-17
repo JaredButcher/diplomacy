@@ -129,8 +129,8 @@ const UNIT = { //Units are identifed by the territory they are located in
  * @enum {string}
  */
 const UNIT_TYPE = {
-    Army: '0',
-    Fleet: '1'
+    ARMY: '0',
+    FLEET: '1'
 }
 /**
  * Enum for possable game orders
@@ -153,104 +153,5 @@ const CHAT = {
     MESSAGE: '0',
     RECIPIENT: '1' //C->S optional PM, S->C set if was PM
 }
-/**
- * Enum for playable contries for defalt map
- * @readonly
- * @namespace
- * @property {object} DEFAULT Default map
- * @property {string} DEFAULT.ID Identifer for map
- * @property {enum} DEFAULT.COUNTRIES List of playable contries on default game board
- * @property {enum} DEFAULT.TERRITORIES List of territories on default game board
- */
-const MAP = {
-    DEFAULT: {
-        ID: '0',
-        COUNTRIES: { 
-            AUSTRIA: '0',
-            ENGLAND: '1',
-            FRANCE: '2',
-            GERMANY: '3',
-            ITALY: '4',
-            RUSSIA: '5',
-            TURKEY: '6'
-        },
-        TERRITORIES: { //
-            ANKARA: '0', //-----------------Supply Centers--------------
-            BELGIUM: '1',
-            BERLIN: '2',
-            BREST: '3',
-            BUDAPEST: '4',
-            BULGARIA: '5',
-            Constantinople: '6',
-            DENMARK: '7',
-            EDINBURGH: '8',
-            GREECE: '9',
-            HOLLAND : '10',
-            KIEL : '11',
-            LIVERPOOL: '12',
-            LONDON: '13',
-            MARSEILLES: '14',
-            MOSCOW: '15',
-            MUNICH: '16',
-            NAPLES: '17',
-            NORWAY: '18',
-            PARIS: '19',
-            PORTUGAL: '20',
-            ROME: '21',
-            RUMANIA: '22',
-            SAINT_PETERSBURG: '23',
-            SERBIA : '24',
-            SEVASTOPOL: '25',
-            SMYRNA: '26',
-            SPAIN: '27',
-            SWEDEN: '28',
-            TRIESTE: '29',
-            TUNIS : '30',
-            VENICE : '31',
-            VIENNA: '32',
-            WARSAW : '33',
-            CLYDE : '34', //--------------------------Other Land------------
-            YORKSHIRE : '35',
-            WALES : '36',
-            PICARDY : '37',
-            GASCONY : '38',
-            BURGUNDY : '39',
-            NORTH_AFRICA: '40',
-            RUHR: '41',
-            PRUSSIA: '42',
-            SILESIA : '43',
-            PIEDMONT: '44',
-            TUSCANY: '45',
-            APULIA: '46',
-            TYROLIA: '47',
-            GALICIA: '48',
-            BOHEMIA: '49',
-            FINLAND: '50',
-            LIVONIA: '51',
-            UKRAINE: '52',
-            ALBANIA: '53',
-            ARMENIA: '54',
-            SYRIA: '55',
-            NORTH_ATLANTIC_OCEAN: '56', //-----------Water-------------------
-            MID_ATLANTIC_OCEAN: '57',
-            NORWEIGIAN_SEA: '58',
-            NORTH_SEA: '59',
-            ENGLISH_CHANNEL: '60',
-            IRISH_SEA: '61',
-            HELIGOLAND_BLIGHT: '62',
-            SKAGERRAK: '63',
-            BALTIC_SEA: '64',
-            GULF_OF_BOTHNIA: '65',
-            BERENTS_SEA: '66',
-            WESTERN_MEDITERRANEAN: '67',
-            GULF_OF_LYONSN: '68',
-            TYRRHENIAN_SEA: '69',
-            IONIAN_SEA: '70',
-            ADRIATIC_SEA: '71',
-            AEGEAN_SEA: '72',
-            EASTERN_MEDITERRANEAN: '73',
-            BLACK_SEA: '74'
-        }
-    }
-}
-export {FIELD, ACTION, ERROR, GAME, MAP, PLAYER, USER, PHASE, UNIT, UNIT_TYPE, ORDER, CHAT};
+
+export {FIELD, ACTION, ERROR, GAME, PLAYER, USER, PHASE, UNIT, UNIT_TYPE, ORDER, CHAT};

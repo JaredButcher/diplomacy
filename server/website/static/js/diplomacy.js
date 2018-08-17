@@ -6,9 +6,11 @@
 
 import { mapDraw } from './map.js';
 
-
 //Arrow draw test
 let map = new mapDraw("gameCanvas");
+
+
+map.ctx.drawImage(document.getElementById('source'), 0, 0);
 
 map.drawLine('green', 50, 200, 150, 150);
 map.drawConvoyRoute('blue', false, 100, 100, 150, 150, 150, 400);
@@ -29,3 +31,15 @@ map.drawX(100, 175);
 map.drawX(125, 125);
 map.drawX(175, 425);
 map.drawX(340, 325);
+
+let mouseDown = false;
+document.getElementById('gameCanvas').onmousedown = function(evt){
+    if(!mouseDown){
+        console.log("X: " + evt.clientX + " Y: " + evt.clientY);
+        mouseDown = true;
+    }
+}
+document.getElementById('gameCanvas').onmouseup = function(evt){
+    mouseDown = false;
+}
+

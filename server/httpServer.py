@@ -172,4 +172,4 @@ class HTTPHandler(BaseHTTPRequestHandler):
             f.close()
             return fileContent
 
-start(1234, 2)
+start(4242, 2)
