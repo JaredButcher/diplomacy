@@ -1,6 +1,20 @@
 {
+    "NAME": "Europe",
+    "DISCRIPTION": "The default map of Diplomacy",
+    "SIZE": {
+        "X": 1000,
+        "Y": 1000
+    },
     "COUNTRY": { 
-        "AUSTRIA": "0",
+        "AUSTRIA": {
+            "ID": "0",
+            "COLOR": "#f00",
+            "TERRITORIES": {
+                "VIENNA": "ARMY",
+                "BUDAPEST": "ARMY",
+                "TRIESTE": "FLEET"
+            }
+        },
         "ENGLAND": "1",
         "FRANCE": "2",
         "GERMANY": "3",
@@ -10,6 +24,7 @@
     },
     "TERRITORY": {
         "ANKARA": {
+            "ID": "0",
             "MARKER": {
                 "X": 0,
                 "Y": 0
@@ -65,6 +80,7 @@
         "SEVASTOPOL": "25",
         "SMYRNA": "26",
         "SPAIN": {
+            "ID": "27",
             "MARKER": {
                 "X": 195,
                 "Y": 730
@@ -131,6 +147,7 @@
         "TYROLIA": "47",
         "GALICIA": "48",
         "BOHEMIA": {
+            "ID": "49",
             "UNIT": [
                 {
                     "TYPE": "ARMY",
@@ -151,7 +168,9 @@
         "UKRAINE": "52",
         "ALBANIA": "53",
         "ARMENIA": "54",
+        "SYRIA": "55",
         "NORTH_ATLANTIC": {
+            "ID": "56",
             "CONVOY": {
                 "X": 0,
                 "Y": 0
@@ -172,6 +191,7 @@
             ]
         },
         "MID_ATLANTIC": {
+            "ID": "57",
             "CONVOY": {
                 "X": 0,
                 "Y": 0

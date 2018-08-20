@@ -128,6 +128,22 @@ class mapDraw{
         this.ctx.lineTo(dX, dY);
         this.ctx.stroke();
     }
+    /**
+     * Draws a circle
+     * @param {string} color - css color 
+     * @param {int} size - size of dot
+     * @param {int} x
+     * @param {int} y 
+     */
+    drawDot(color, size, x, y){
+        this.ctx.beginPath();
+        this.ctx.lineCap = "round";
+        this.ctx.lineWidth = size;
+        this.ctx.strokeStyle = color;
+        this.ctx.moveTo(x, y);
+        this.ctx.arc(x, y, 1, 0, 2 * Math.PI, false);
+        this.ctx.stroke();
+    }
 
     /**
      * Draws a unit
@@ -140,19 +156,9 @@ class mapDraw{
     drawUnit(color, isDisloged, type, x, y){
         this.ctx.lineCap = "round";
         if(isDisloged){
-            this.ctx.beginPath();
-            this.ctx.lineWidth = 50
-            this.ctx.strokeStyle = '#black';
-            this.ctx.moveTo(x, y);
-            this.ctx.arc(x, y, 1, 0, 2 * Math.PI, false);
-            this.ctx.stroke();
+            this.drawDot('black', mapDraw.UNIT_SIZE() + 10, x, y);
         }
-        this.ctx.beginPath();
-        this.ctx.lineWidth = mapDraw.UNIT_SIZE();
-        this.ctx.strokeStyle = color;
-        this.ctx.moveTo(x, y);
-        this.ctx.arc(x, y, 1, 0, 2 * Math.PI, false);
-        this.ctx.stroke();
+        this.drawDot(color, mapDraw.UNIT_SIZE(), x, y);
         this.ctx.font = (mapDraw.UNIT_SIZE() * .75) + 'px Arial Black';
         this.ctx.lineWidth = 2;
         this.ctx.strokeStyle = 'black';
