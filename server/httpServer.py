@@ -15,7 +15,8 @@ def start(port, maxThreads):
             maxThreads (int): Maximum number of threads to make
     """
     serverAddress = ('', port)
-    httpd = ThreadPoolHTTPServer(serverAddress, HTTPHandler, maxThreads=maxThreads)
+    httpd = HTTPServer(serverAddress, HTTPHandler)
+    #httpd = ThreadPoolHTTPServer(serverAddress, HTTPHandler, maxThreads=maxThreads)
     httpd.serve_forever()
 
 class ThreadPoolHTTPServer(ThreadingMixIn, HTTPServer):
@@ -48,12 +49,15 @@ class HTTPHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         self.statusCode = 200
         self.usingSession = True
+        print("preBody: " + self.path)
         body = bytes(self._route(self.path), "utf8")
         self.send_response(self.statusCode)
         self.send_header("Content-type", self.mime)
         if self.usingSession: self._handleSession()
         self.end_headers()
+        print("writeBody")
         self.wfile.write(body)
+        print("done")
 
     def _route(self, path):
         '''Parse url and create the response body
@@ -153,7 +157,6 @@ class HTTPHandler(BaseHTTPRequestHandler):
             cookie.load(self.headers["Cookie"])
             if "session" in cookie:
                 if cookie['session'].value in self.sessionData:
-                    print("found")
                     return
         key = ''.join(random.choice(string.ascii_letters + string.digits) for x in range(32))
         with self.sessionDataLock:
@@ -171,5 +174,3 @@ class HTTPHandler(BaseHTTPRequestHandler):
             fileContent = f.read()
             f.close()
             return fileContent
-
-start(4242, 2)

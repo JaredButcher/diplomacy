@@ -3,9 +3,8 @@
  * @author Jared Butcher <jared.butcher1219@gmail.com>
  * @module diplomacy/wsClient
  */
-import * as PROTOCOL from "./protocol";
-import getCookie from "./cookies"
-import { SSL_OP_NO_TICKET } from "constants";
+import * as PROTOCOL from "./protocol.js";
+import {getCookie} from "./cookies.js"
 
 const WS_PORT = 4543;
 const wsClients = [];
@@ -18,7 +17,7 @@ class wsClient{
      * @param {integer} port - server port
      * @param {responseCallback} responseCallback - Callback to handle received messages
      */
-    constructor(ip, port, responseCallback=null){
+    constructor(ip=window.location.hostname, port=WS_PORT, responseCallback=null){
         this.ip = ip;
         this.port = port;
         this.responseCallback = [];
@@ -28,10 +27,10 @@ class wsClient{
         this.conn = new WebSocket("ws://" + ip + ":" + port);
         this.conn.onmessage = function(message){
             try{
-                let data = JSON.parseFloat(message.data);
+                let data = JSON.parse(message.data);
             }catch(e){
                 if(typeof(e) == SyntaxError){
-                    res = {};
+                    let res = {};
                     res[PROTOCOL.FIELD.ACTION] = PROTOCOL.ACTION.ERROR;
                     res[PROTOCOL.FIELD.ERROR] = PROTOCOL.ERROR.BAD_REQUEST;
                     this.send(res);
@@ -45,7 +44,8 @@ class wsClient{
             });
         };
         this.conn.onopen = function(){
-            req = {};
+            console.log("open")
+            let req = {};
             req[PROTOCOL.FIELD.ACTION] = PROTOCOL.FIELD.UPDATE;
             req[PROTOCOL.FIELD.PLAYER] = getCookie("session");
             this.send(req);
@@ -112,7 +112,8 @@ class wsClient{
 /**
 * Callback type used for receiveing a valid message in wsClient
 * @callback responseCallback
-* @param {object} message - json object received
+* @param {object} message - json object received or blob
+* @param {string} blobURI - if message is blob then URI of blob
 */
 
 export {wsClient, WS_PORT};

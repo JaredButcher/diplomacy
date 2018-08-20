@@ -3,6 +3,8 @@ import websockets
 import threading
 import json
 
+contentLocation = "server/website/"
+
 class websocketServer:
     '''An instance of websocket server that will create and run in a seprate thread.
 
@@ -73,13 +75,13 @@ class websocketClient:
                 except ValueError:
                     return
             self._receiveEvent(self, message)
-    def send(self, message):
+    def send(self, message, isBlob=False):
         '''Asyncinously sends a message to this client.
 
         Args:
             message (string or dict): message to be sent
         '''
-        if type(message) is dict:
+        if type(message) is dict and not isBlob:
             message = json.dumps(message)
         try:
             asyncio.run_coroutine_threadsafe(self._conn.send(message), self._socketServer.loop)

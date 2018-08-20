@@ -68,6 +68,7 @@ CREATE TABLE supplyTerritories (
 CREATE TABLE unit (
     user INT NOT NULL,
     game INT NOT NULL,
+    turn INT NOT NULL,
     territory VARCHAR(3) NOT NULL,
     type VARCHAR(2) NOT NULL,
     coast INT,

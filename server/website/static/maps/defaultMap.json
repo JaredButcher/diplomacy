@@ -1,6 +1,7 @@
 {
     "NAME": "Europe",
     "DISCRIPTION": "The default map of Diplomacy",
+    "IMG": "/static/img/defaultMap.svg",
     "SIZE": {
         "X": 1000,
         "Y": 1000

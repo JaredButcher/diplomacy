@@ -14,8 +14,8 @@ import * as PROTOCOL from "./protocol";
  * @returns {bool} was login sucessful
  */
 function login(username, password){
-    ws = obtainWsClient(window.location.hostname, WS_PORT, message => {
-        if(messagereq[PROTOCOL.FIELD.ACTION] == PROTOCOL.ACTION.LOGIN){
+    ws = obtainWsClient(responseCallback = message, isBlob => {
+        if(!isBlob && message[PROTOCOL.FIELD.ACTION] == PROTOCOL.ACTION.LOGIN){
             if(message.hasOwnProperty(PROTOCOL.FIELD.PLAYER)){
                 return true;
             }else{

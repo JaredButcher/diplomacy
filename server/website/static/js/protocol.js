@@ -36,8 +36,8 @@ const ACTION = {
         //C->S request list of aviable games
         //S->C GAME field contains list of aviable games that are objects containing ID, OWNER, PLAYERS as number of players, MAX_PLAYERS, NAME, and PASSWORD is set if there is a password
     ERROR: '6', //Error code
-    PREV_TURN: '7', 
-        //C->S GAME.TURN contains turn to view
+    VIEW_GAME: '7', 
+        //C->S GAME.TURN contains turn to view and GAME.ID contains game ID
         //S->C GAME object contains TURN, and list of all PLAYERS that each have their TERRITORIES list and UNITS list compleate with their order for that turn
     LOGIN: '8',
         //C->S PLAYER field will contain user with username and password
@@ -64,15 +64,15 @@ const GAME = {
     OWNER: '1', //USER.ID of owner
     PLAYERS: '2', //Either list of players or
     TURN: '3', //Current turn or turn to look back on
-    TIMER_START: '3', //When current phase started
-    TIMER_DURATIONS: '4', //Object with the timer duration of each phase, object of PHASE
-    CURRENT_PHASE: '5',
-    MAX_PLAYERS: '6',
-    NAME: '7',
-    WINNERS: '8',
-    MAP: '9',
-    PASSWORD: '10', //Optioanl field, if set on server list then password is required
-    PAUSE: '11' //By setting this field the game can be paused, value > 0 for timed pause (minutes), else to unpause
+    TIMER_START: '4', //When current phase started
+    TIMER_DURATIONS: '5', //Object with the timer duration of each phase, object of PHASE
+    CURRENT_PHASE: '6',
+    MAX_PLAYERS: '7',
+    NAME: '8',
+    WINNERS: '9',
+    MAP: '10',
+    PASSWORD: '11', //Optioanl field, if set on server list then password is required
+    PAUSE: '12' //By setting this field the game can be paused, value > 0 for timed pause (minutes), else to unpause
 }
 /**
  * Enum for player object
