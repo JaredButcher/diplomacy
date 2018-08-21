@@ -106,3 +106,6 @@ venv.bak/
 #JSDOC
 out/
 out/*
+
+server/nginx/
+!server/nginx/conf/nginx.conf

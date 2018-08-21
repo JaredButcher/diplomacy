@@ -15,8 +15,8 @@ def start(port, maxThreads):
             maxThreads (int): Maximum number of threads to make
     """
     serverAddress = ('', port)
-    httpd = HTTPServer(serverAddress, HTTPHandler)
-    #httpd = ThreadPoolHTTPServer(serverAddress, HTTPHandler, maxThreads=maxThreads)
+    #httpd = HTTPServer(serverAddress, HTTPHandler) #Non theaded alternitive
+    httpd = ThreadPoolHTTPServer(serverAddress, HTTPHandler, maxThreads=maxThreads)
     httpd.serve_forever()
 
 class ThreadPoolHTTPServer(ThreadingMixIn, HTTPServer):
@@ -49,15 +49,20 @@ class HTTPHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         self.statusCode = 200
         self.usingSession = True
-        print("preBody: " + self.path)
-        body = bytes(self._route(self.path), "utf8")
+        print(self.requestline)
+        body = self._route(self.path)
         self.send_response(self.statusCode)
-        self.send_header("Content-type", self.mime)
-        if self.usingSession: self._handleSession()
-        self.end_headers()
-        print("writeBody")
-        self.wfile.write(body)
-        print("done")
+        if body:
+            body = bytes(self._route(self.path), "utf8")
+            self.send_header("Content-type", self.mime)
+            if self.usingSession: self._handleSession()
+            self.end_headers()
+            self.wfile.write(body)
+        else:
+            self.send_response(self.statusCode)
+            if self.statusCode == 305:
+                self.send_header("Location", 'http://localhost:80' + self.path)
+            self.end_headers()
 
     def _route(self, path):
         '''Parse url and create the response body
@@ -95,16 +100,9 @@ class HTTPHandler(BaseHTTPRequestHandler):
                     return self._layout(self._readFile("diplomacy/game.html"))
                 else:
                     return self._route('error/404')
-            elif path[1] == 'static':
-                self.usingSession = False
-                path = self.path[1:]
-                try:
-                    fileContent = self._readFile(path)
-                    self.mime = self.findMimeType(path)
-                    return fileContent
-                except (IOError, KeyError) as e:
-                    print("error: " + path)
-                    return self._route("error/404")
+            elif path[1] == 'static': #Use server such as nginx as a proxy and to serve static content
+                self.statusCode = 305
+                return
             else:
                 try:
                     self.statusCode = int(path[2])

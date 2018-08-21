@@ -5,12 +5,13 @@
  */
 
 import * as map from './map.js';
-import {mapDraw} from '/mapDraw.js';
+import {mapDraw} from './mapDraw.js';
 
 let gameMap = new map.map('/static/maps/defaultMap.json');
 
 //Arrow draw test
-let canvas = new map.mapDraw("gameCanvas");
+/*
+let canvas = new mapDraw("gameCanvas");
 
 gameMap.onload = function(){
     requestAnimationFrame(draw);
@@ -45,7 +46,7 @@ function draw(){
     canvas.drawX(340, 325);
     requestAnimationFrame(draw);
 }
-
+*/
 let mouseDown = false;
 document.getElementById('gameCanvas').onmousedown = function(evt){
     if(!mouseDown){
