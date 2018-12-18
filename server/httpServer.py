@@ -100,6 +100,8 @@ class HTTPHandler(BaseHTTPRequestHandler):
                     return self._layout(self._readFile("diplomacy/game.html"))
                 else:
                     return self._route('error/404')
+            elif path[1] == 'mapEditor':
+                return self._layout(self._readFile("mapEditor/mapEditor.html"))
             elif path[1] == 'static': #Use server such as nginx as a proxy and to serve static content
                 self.statusCode = 305
                 return

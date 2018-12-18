@@ -5,14 +5,15 @@
  */
 
 import * as map from './map.js';
-import {mapDraw} from './mapDraw.js';
+import {MapDraw} from './mapDraw.js';
 
-let gameMap = new map.map('/static/maps/defaultMap.json');
+let gameMap = new map.Map('/static/maps/defaultMap.json', 'gameCanvas');
 
 //Arrow draw test
-/*
-let canvas = new mapDraw("gameCanvas");
 
+let canvas = new MapDraw("gameCanvas");
+
+/*
 gameMap.onload = function(){
     requestAnimationFrame(draw);
     console.log("load")
@@ -44,9 +45,8 @@ function draw(){
     canvas.drawX(125, 125);
     canvas.drawX(175, 425);
     canvas.drawX(340, 325);
-    requestAnimationFrame(draw);
-}
-*/
+}*/
+
 let mouseDown = false;
 document.getElementById('gameCanvas').onmousedown = function(evt){
     if(!mouseDown){

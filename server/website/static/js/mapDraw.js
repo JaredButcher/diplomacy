@@ -4,7 +4,7 @@
  * @module diplomacy/mapDraw
  */
 
-class mapDraw{
+class MapDraw{
     /**
      * Class for drawing arrows and other map elements 
      * @param {string} canvasId - html id for game canvas to write to 
@@ -23,7 +23,7 @@ class mapDraw{
 
     static LINE_WIDTH() {return 8;}
 
-    static UNIT_SIZE() {return 30;}
+    static UNIT_SIZE() {return 20;}
 
     /**
      * Draws a solid arrow representing a move of a unit on canvas area
@@ -36,7 +36,7 @@ class mapDraw{
      */
     drawArrow(color, isSupport, sX, sY, dX, dY){
         this.ctx.beginPath();
-        this.ctx.lineWidth = mapDraw.LINE_WIDTH();
+        this.ctx.lineWidth = MapDraw.LINE_WIDTH();
         this.ctx.strokeStyle = color;
         if(isSupport){
             this.ctx.lineCap = "butt";
@@ -44,16 +44,16 @@ class mapDraw{
         }
         this.ctx.moveTo(sX, sY);
         let angle = Math.atan2(dY-sY, dX-sX);
-        dX -= Math.cos(angle) * mapDraw.UNIT_SIZE() * .6;
-        dY -= Math.sin(angle) * mapDraw.UNIT_SIZE() * .6;
+        dX -= Math.cos(angle) * MapDraw.UNIT_SIZE() * .6;
+        dY -= Math.sin(angle) * MapDraw.UNIT_SIZE() * .6;
         this.ctx.lineTo(dX, dY);
         this.ctx.stroke();
         this.ctx.beginPath();
         this.ctx.lineCap = "round";
         this.ctx.moveTo(dX,dY);
-        this.ctx.lineTo(dX - Math.cos(angle + mapDraw.ARROW_POINT_ANGLE())*mapDraw.ARROW_POINT_LENGTH(), dY - Math.sin(angle + mapDraw.ARROW_POINT_ANGLE())*mapDraw.ARROW_POINT_LENGTH());
+        this.ctx.lineTo(dX - Math.cos(angle + MapDraw.ARROW_POINT_ANGLE())*MapDraw.ARROW_POINT_LENGTH(), dY - Math.sin(angle + MapDraw.ARROW_POINT_ANGLE())*MapDraw.ARROW_POINT_LENGTH());
         this.ctx.moveTo(dX,dY);
-        this.ctx.lineTo(dX - Math.cos(angle - mapDraw.ARROW_POINT_ANGLE())*mapDraw.ARROW_POINT_LENGTH(), dY - Math.sin(angle - mapDraw.ARROW_POINT_ANGLE())*mapDraw.ARROW_POINT_LENGTH());
+        this.ctx.lineTo(dX - Math.cos(angle - MapDraw.ARROW_POINT_ANGLE())*MapDraw.ARROW_POINT_LENGTH(), dY - Math.sin(angle - MapDraw.ARROW_POINT_ANGLE())*MapDraw.ARROW_POINT_LENGTH());
         this.ctx.stroke();
     }
 
@@ -69,7 +69,7 @@ class mapDraw{
      */
     drawAttackSupport(color, sX, sY, dX, dY, tX, tY){
         this.ctx.beginPath();
-        this.ctx.lineWidth = mapDraw.LINE_WIDTH();
+        this.ctx.lineWidth = MapDraw.LINE_WIDTH();
         this.ctx.lineCap = "butt";
         this.ctx.strokeStyle = color;
         this.ctx.setLineDash([6, 2]);
@@ -91,17 +91,17 @@ class mapDraw{
      */
     drawConvoyRoute(color, isFinal, sX, sY, cX, cY, dX, dY){
         this.ctx.beginPath();
-        this.ctx.lineWidth = mapDraw.LINE_WIDTH();
+        this.ctx.lineWidth = MapDraw.LINE_WIDTH();
         this.ctx.lineCap = "round";
         this.ctx.lineJoin = "round";
         this.ctx.strokeStyle = color;
         this.ctx.moveTo(sX, sY);
         let angle = Math.atan2(cY-sY, cX-sX) + Math.PI/2; //Find normal angle
-        let stepX = (cX-sX)/mapDraw.CONVOY_SQUIGLES();
-        let stepY = (cY-sY)/mapDraw.CONVOY_SQUIGLES();
-        let offsetX = Math.cos(angle)*mapDraw.CONVOY_SQUIGLE_WIDTH();
-        let offsetY = Math.sin(angle)*mapDraw.CONVOY_SQUIGLE_WIDTH();
-        for(let i = 0; i < mapDraw.CONVOY_SQUIGLES(); ++i){
+        let stepX = (cX-sX)/MapDraw.CONVOY_SQUIGLES();
+        let stepY = (cY-sY)/MapDraw.CONVOY_SQUIGLES();
+        let offsetX = Math.cos(angle)*MapDraw.CONVOY_SQUIGLE_WIDTH();
+        let offsetY = Math.sin(angle)*MapDraw.CONVOY_SQUIGLE_WIDTH();
+        for(let i = 0; i < MapDraw.CONVOY_SQUIGLES(); ++i){
             let direction = (i % 2 == 0) ? 1 : -1;
             this.ctx.quadraticCurveTo(stepX * (i + .5) + sX + offsetX * direction, stepY * (i + .5) + sY + offsetY * direction, stepX*(i+1) + sX, stepY*(i+1) + sY);
         }
@@ -119,7 +119,7 @@ class mapDraw{
      */
     drawLine(color, sX, sY, dX, dY){
         this.ctx.beginPath();
-        this.ctx.lineWidth = mapDraw.LINE_WIDTH();
+        this.ctx.lineWidth = MapDraw.LINE_WIDTH();
         this.ctx.lineCap = "round";
         this.ctx.strokeStyle = color;
         this.ctx.moveTo(sX, sY);
@@ -133,7 +133,7 @@ class mapDraw{
      * @param {int} y
      * @param {int} size - size of dot
      */
-    drawDot(color, x, y, size=mapDraw.UNIT_SIZE()){
+    drawDot(color, x, y, size=MapDraw.UNIT_SIZE()){
         this.ctx.beginPath();
         this.ctx.lineJoin = "round";
         this.ctx.lineWidth = size;
@@ -154,13 +154,13 @@ class mapDraw{
     drawUnit(color, isDisloged, type, x, y){
         this.ctx.lineCap = "round";
         if(isDisloged){
-            this.drawDot('black', x, y, mapDraw.UNIT_SIZE() + 10);
+            this.drawDot('black', x, y, MapDraw.UNIT_SIZE() + 10);
         }
         this.drawDot(color, x, y);
-        this.ctx.font = (mapDraw.UNIT_SIZE() * .75) + 'px Arial Black';
+        this.ctx.font = (MapDraw.UNIT_SIZE() * .75) + 'px Arial Black';
         this.ctx.lineWidth = 2;
         this.ctx.strokeStyle = 'black';
-        this.ctx.fillText(type, x - mapDraw.UNIT_SIZE() / 4, y + mapDraw.UNIT_SIZE() / 4);
+        this.ctx.fillText(type, x - MapDraw.UNIT_SIZE() / 4, y + MapDraw.UNIT_SIZE() / 4);
     }
 
     /**
@@ -170,15 +170,15 @@ class mapDraw{
      */
     drawX(x, y){
         this.ctx.beginPath();
-        this.ctx.lineWidth = mapDraw.LINE_WIDTH() * .75;
+        this.ctx.lineWidth = MapDraw.LINE_WIDTH() * .75;
         this.ctx.strokeStyle = 'black';
-        this.ctx.moveTo(x - mapDraw.LINE_WIDTH(), y - mapDraw.LINE_WIDTH());
-        this.ctx.lineTo(x + mapDraw.LINE_WIDTH(), y + mapDraw.LINE_WIDTH());
-        this.ctx.moveTo(x + mapDraw.LINE_WIDTH(), y - mapDraw.LINE_WIDTH());
-        this.ctx.lineTo(x - mapDraw.LINE_WIDTH(), y + mapDraw.LINE_WIDTH());
+        this.ctx.moveTo(x - MapDraw.LINE_WIDTH(), y - MapDraw.LINE_WIDTH());
+        this.ctx.lineTo(x + MapDraw.LINE_WIDTH(), y + MapDraw.LINE_WIDTH());
+        this.ctx.moveTo(x + MapDraw.LINE_WIDTH(), y - MapDraw.LINE_WIDTH());
+        this.ctx.lineTo(x - MapDraw.LINE_WIDTH(), y + MapDraw.LINE_WIDTH());
         this.ctx.stroke();
     }
 
 }
 
-export {mapDraw};
+export {MapDraw};
