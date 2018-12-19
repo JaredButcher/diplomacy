@@ -20,6 +20,22 @@ function readMap(evt){
     reader.readAsText(evt.target.files[0]);
 }
 
+document.getElementById("saveFile").onclick = (evt) => {
+    if(!mapData || !mapData.NAME){
+        console.error("Invalid map data");
+        return;
+    }
+    let element = document.createElement("a");
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + JSON.stringify(mapData));
+    element.setAttribute('download', mapData.NAME + ".json")
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+};
+
+
+
 document.getElementById("mapFile").addEventListener('change', readMap, false);
 
 let mouseDown = false;

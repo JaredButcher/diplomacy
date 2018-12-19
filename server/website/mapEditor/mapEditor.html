@@ -1,10 +1,66 @@
 <canvas id="mapCanvas" height="1000" width="1000"></canvas>
-<form>
-    <label>Name: </label><input type="text" id="terName"/>
-    <label>Is supply point: </label><input type="checkbox" id="terSupply"/>
-    <input type="button" value="Add unit" id="terAddUnit"/>
-    <input type="button" value="Update" id="terUpdate"/>
-</form>
-<label>Map data: </label><input type="file" id="mapFile"/>
-<input type="button" id="saveFile" value="Save File"/>
+<div id="mapEditInputContainer">
+    <label>Link:</label>
+    <div>
+        <label>Territory 1: </label>
+        <select id="linkTer1">
+            <option value="temp">temp</option>
+        </select>
+        <label>Unit 1: </label>
+        <select id="linkUnit1">
+                <option value="temp">temp</option>
+        </select>
+        <label>Territory 2: </label>
+        <select id="linkTer2">
+                <option value="temp">temp</option>
+        </select>
+        <label>Unit 2: </label>
+        <select id="linkUnit2">
+                <option value="temp">temp</option>
+        </select>
+        <input type="button" value="Add Link" id="addLink"/>
+    </div>
+    <label>Unit:</label>
+    <div>
+        <label>Territory: </label>
+        <select id="unitTer">
+            <option value="temp">temp</option>
+        </select>
+        <label>Army:</label><input type="radio" value="ARMY" name="unitType"/>
+        <label>Fleet:</label><input type="radio" value="FLEET" name="unitType"/>
+        <label>Marker X:</label><input class="numberInput" type="number" id="unitX"/>
+        <label>Y:</label><input class="numberInput" type="number" id="unitY"/>
+        <label>Coast ID:</label>
+        <select di="unitCoast">
+            <option value="None">None</option>
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+        </select>
+        <input type="button" value="Add unit" id="addUnit"/>
+    </div>
+    <label>Territory:</label>
+    <div>
+        <label>Name:</label><input type="text" id="terName"/>
+        <label>Is supply point:</label><input type="checkbox" id="terSupply"/>
+        <label>Supply Marker X:</label><input class="numberInput" type="number" id="terX"/>
+        <label>Y:</label><input class="numberInput" type="number" id="terY"/>
+        <input type="button" value="Add territory" id="addTerr"/>
+    </div>
+    <label>Map:</label>
+    <div>
+        <label>Name:</label><input type="text" id="mapName"/>
+        <label>Discription:</label><textarea id="mapDisc"></textarea>
+        <label>Img:</label><input type="url" id="mapImg"/>
+        <label>Img Size X:</label><input class="numberInput" type="number" id="mapX"/>
+        <label>Y:</label><input class="numberInput" type="number" id="mapY"/>
+        <input type="button" value="Create Map" id="createMap"/>
+    </div>
+    <label>File:</label>
+    <div>
+        <label>Map data:</label><input type="file" id="mapFile"/>
+        <input type="button" id="saveFile" value="Save File"/>
+    </div>
+</div>
 <script type="module" src="../static/js/mapEditor.js"></script>
