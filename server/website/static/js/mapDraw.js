@@ -10,7 +10,8 @@ class MapDraw{
      * @param {string} canvasId - html id for game canvas to write to 
      */
     constructor(canvasId){
-        this.ctx = document.getElementById(canvasId).getContext('2d');
+        this.canvas = document.getElementById(canvasId);
+        this.ctx = this.canvas.getContext('2d');
     }
 
     static ARROW_POINT_LENGTH() {return 15;}
@@ -146,21 +147,23 @@ class MapDraw{
     /**
      * Draws a unit
      * @param {string} color - css color 
-     * @param {bool} isDisloged - is unit currently disloged
      * @param {string} type - Letter displayed on unit, should be A or F
      * @param {int} x
-     * @param {int} y 
+     * @param {int} y
+     * @param {bool} isDisloged - is unit currently disloged, draws black border
+     * @param {bool} isSelected - is unit selected, shades unit
      */
-    drawUnit(color, isDisloged, type, x, y){
+    drawUnit(color, type, x, y, isDisloged=false, isSelected=false){
         this.ctx.lineCap = "round";
         if(isDisloged){
             this.drawDot('black', x, y, MapDraw.UNIT_SIZE() + 10);
         }
-        this.drawDot(color, x, y);
-        this.ctx.font = (MapDraw.UNIT_SIZE() * .75) + 'px Arial Black';
+        let size = isSelected ? MapDraw.UNIT_SIZE() + 6 : MapDraw.UNIT_SIZE() ;
+        this.drawDot(color, x, y, size);
+        this.ctx.font = (size * .75) + 'px Arial Black';
         this.ctx.lineWidth = 2;
         this.ctx.strokeStyle = 'black';
-        this.ctx.fillText(type, x - MapDraw.UNIT_SIZE() / 4, y + MapDraw.UNIT_SIZE() / 4);
+        this.ctx.fillText(type, x - size / 4, y + size / 4);
     }
 
     /**
@@ -177,6 +180,13 @@ class MapDraw{
         this.ctx.moveTo(x + MapDraw.LINE_WIDTH(), y - MapDraw.LINE_WIDTH());
         this.ctx.lineTo(x - MapDraw.LINE_WIDTH(), y + MapDraw.LINE_WIDTH());
         this.ctx.stroke();
+    }
+
+    clear(){
+        this.ctx.save();
+        this.ctx.setTransform(1,0,0,1,0,0);
+        this.ctx.clearRect(0,0, this.canvas.width, this.canvas.height);
+        this.ctx.restore();
     }
 
 }

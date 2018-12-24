@@ -33,13 +33,13 @@ function draw(){
     canvas.drawArrow('orange', false, 300, 200, 300, 300);
     canvas.drawAttackSupport('orange', 400, 280, 300, 300, 300, 200);
     
-    canvas.drawUnit('blue', false, 'F', 100, 100);
-    canvas.drawUnit('green', false, 'A', 50, 200);
-    canvas.drawUnit('green', false, 'F', 200, 450);
-    canvas.drawUnit('red', false, 'A', 375, 350);
-    canvas.drawUnit('red', true, 'A', 300, 300);
-    canvas.drawUnit('orange', false, 'A', 400, 280);
-    canvas.drawUnit('orange', false, 'A', 300, 200);
+    canvas.drawUnit('blue', 'F', 100, 100);
+    canvas.drawUnit('green', 'A', 50, 200);
+    canvas.drawUnit('green', 'F', 200, 450);
+    canvas.drawUnit('red', 'A', 375, 350);
+    canvas.drawUnit('red', 'A', 300, 300, true);
+    canvas.drawUnit('orange', 'A', 400, 280);
+    canvas.drawUnit('orange', 'A', 300, 200);
     
     canvas.drawX(100, 175);
     canvas.drawX(125, 125);

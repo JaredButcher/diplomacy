@@ -13,6 +13,7 @@ import {MapDraw} from "./mapDraw.js";
 "DISCRIPTION"
 "IMG"
 "SIZE"
+"MAX_DISTANCE"
 "X"
 "Y"
 "COUNTRY"
@@ -61,18 +62,23 @@ class Map{
             console.error("invalid type passed to Map")
         }
     }
+    getMapData(){
+        return this.mapData;
+    }
     /**
      * Draw map
      */
     drawMap(){
+        this.draw.clear();
         this.draw.ctx.drawImage(this.img, 0, 0);
         for(let [territoryName, territory] of Object.entries(this.mapData["TERRITORY"])){
             if(territory["MARKER"]){
                 this.draw.drawDot('black', territory.MARKER.X, territory.MARKER.Y)
             }
             if (this.editorMode && territory.UNIT){
-                for(let [key, unit] of Object.entries(territory.UNIT)){
-                    this.draw.drawUnit('gray', false, unit.TYPE[0], unit.X, unit.Y)
+                for(let i = 0; i < territory.UNIT.length; ++i){
+                    let unit = territory.UNIT[i];
+                    this.draw.drawUnit('gray', unit.TYPE[0], unit.X, unit.Y)
                     for(let [key, border] of Object.entries(unit.BORDER)){
                         let borderTerritory = this.mapData.TERRITORY[border];
                         if (borderTerritory && borderTerritory.UNIT){
@@ -92,6 +98,31 @@ class Map{
                 }
             }
         }
+        console.log("Draw")
+        requestAnimationFrame(() => this.drawMap());
+    }
+    /**Finds unit being clicked on and returns it. If none then returns null in all fields
+     * @param {float} x 
+     * @param {float} y 
+     * @returns [territoryName, territory, unit]
+     */
+    unitSelect(x, y){
+        let MAX_DISTANCE = this.mapData["MAX_DISTANCE"]; //Max distance between units within a territory, used to speed up calculations
+        for(let [territoryName, territory] of Object.entries(this.mapData["TERRITORY"])){
+            if(territory.UNIT){
+                for(let i = 0; i < territory.UNIT.length; ++i){
+                    let unit = territory.UNIT[i];
+                    //Quick check if country near 
+                    if(Math.abs(unit.X - x) > MAX_DISTANCE || Math.abs(unit.Y - y) > MAX_DISTANCE){
+                        break;
+                    }
+                    if(Math.sqrt((x-unit.X)**2 + (y-unit.Y)**2) <= MapDraw.UNIT_SIZE()){
+                        return [territoryName, territory, unit];
+                    }
+                }
+            }
+        }
+        return [null, null, null]
     }
 }
 export {Map};

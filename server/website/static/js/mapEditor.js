@@ -6,21 +6,24 @@
 
 import {Map} from './map.js';
 
-let mapData = null;
-let imgData = null;
 let loadedMap = null;
 let canvas = document.getElementById("mapCanvas");
 
 function readMap(evt){
     let reader = new FileReader();
     reader.onload = (file) => {
-        mapData = JSON.parse(file.target.result);
-        loadedMap = new Map(mapData, "mapCanvas", true);
+        loadedMap = new Map(JSON.parse(file.target.result), "mapCanvas", true);
     };
     reader.readAsText(evt.target.files[0]);
 }
 
+//Loads default map
+document.addEventListener('DOMContentLoaded', () => {
+    loadedMap = new Map('/static/maps/defaultMap.json', 'mapCanvas', true);
+});
+
 document.getElementById("saveFile").onclick = (evt) => {
+    let mapData = loadedMap.getMapData();
     if(!mapData || !mapData.NAME){
         console.error("Invalid map data");
         return;
@@ -44,10 +47,19 @@ document.getElementById('mapCanvas').onmousedown = function(evt){
         let rect = canvas.getBoundingClientRect();
         console.log("X: " + (evt.clientX - rect.left) + " Y: " + (evt.clientY - rect.top));
         mouseDown = true;
+        if(loadedMap){
+            let [territoryName, territory, unit] = loadedMap.unitSelect((evt.clientX - rect.left), (evt.clientY - rect.top));
+            console.log("map loaded")
+            console.log(territoryName)
+            console.log(territory)
+            console.log(unit)
+        }
     }
 }
 document.getElementById('mapCanvas').onmouseup = function(evt){
     mouseDown = false;
 }
 
-
+window.stopStuff = () => {
+    loadedMap = null;
+}
