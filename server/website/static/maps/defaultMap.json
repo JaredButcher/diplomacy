@@ -7,22 +7,24 @@
         "Y": 1000
     },
     "MAX_DISTANCE": 500,
-    "COUNTRY": { 
-        "AUSTRIA": {
-            "ID": "0",
-            "COLOR": "#f00",
-            "TERRITORIES": {
-                "VIENNA": "ARMY",
-                "BUDAPEST": "ARMY",
-                "TRIESTE": "FLEET"
-            }
-        },
-        "ENGLAND": "1",
-        "FRANCE": "2",
-        "GERMANY": "3",
-        "ITALY": "4",
-        "RUSSIA": "5",
-        "TURKEY": "6"
+    "COUNTRY": {
+        "7": {
+            "AUSTRIA": {
+                "ID": "0",
+                "COLOR": "#f00",
+                "TERRITORY": {
+                    "VIENNA": "ARMY",
+                    "BUDAPEST": "ARMY",
+                    "TRIESTE": "FLEET"
+                }
+            },
+            "ENGLAND": "1",
+            "FRANCE": "2",
+            "GERMANY": "3",
+            "ITALY": "4",
+            "RUSSIA": "5",
+            "TURKEY": "6"
+        }
     },
     "TERRITORY": {
         "ANKARA": {
@@ -35,23 +37,12 @@
                 {
                     "TYPE": "ARMY",
                     "X": 0,
-                    "Y": 0,
-                    "BORDER": [
-                        "CONSTANTINOPLE",
-                        "SMYRNA",
-                        "ARMENIA",
-                        "BLACK_SEA"
-                    ]
+                    "Y": 0
                 },
                 {
                     "TYPE": "FLEET",
                     "X": 0,
-                    "Y": 0,
-                    "BORDER": [
-                        "CONSTANTINOPLE",
-                        "ARMENIA",
-                        "BLACK_SEA"
-                    ]
+                    "Y": 0
                 }
             ]
         }, 
@@ -91,39 +82,19 @@
                 {
                     "TYPE": "ARMY",
                     "X": 255,
-                    "Y": 705,
-                    "BORDER": [
-                        "PORTUGAL",
-                        "GASCONY",
-                        "MARSEILLES",
-                        "MID_ATLANTIC",
-                        "WEST_MEDITERRANEAN",
-                        "GULF_OF_LYON"
-                    ]
+                    "Y": 705
                 },
                 {
                     "TYPE": "FLEET",
                     "COAST": 0,
                     "X": 215,
-                    "Y": 664,
-                    "BORDER": [
-                        "PORTUGAL",
-                        "GASCONY",
-                        "MID_ATLANTIC"
-                    ]
+                    "Y": 664
                 },
                 {
                     "TYPE": "FLEET",
                     "COAST": 1,
                     "X": 265,
-                    "Y": 800,
-                    "BORDER": [
-                        "PORTUGAL",
-                        "MARSEILLES",
-                        "MID_ATLANTIC",
-                        "WEST_MEDITERRANEAN",
-                        "GULF_OF_LYON"
-                    ]
+                    "Y": 800
                 }
             ]
         },
@@ -154,14 +125,7 @@
                 {
                     "TYPE": "ARMY",
                     "X": 0,
-                    "Y": 0,
-                    "BORDER": [
-                        "MUNICH",
-                        "SILESIA",
-                        "GALICIA",
-                        "VIENNA",
-                        "TYROLIA"
-                    ]
+                    "Y": 0
                 }
             ]
         },
@@ -181,14 +145,7 @@
                 {
                     "TYPE": "FLEET",
                     "X": 0,
-                    "Y": 0,
-                    "BORDER":[
-                        "MID_ATLANTIC",
-                        "IRISH_SEA",
-                        "NORWEIGIAN_SEA",
-                        "CLYDE",
-                        "LIVERPOOL"
-                    ]
+                    "Y": 0
                 }
             ]
         },
@@ -201,26 +158,8 @@
             "UNIT": [
                 {
                     "TYPE": "FLEET",
-                    "X": 0,
-                    "Y": 0,
-                    "BORDER":[
-                        "MID_ATLANTIC",
-                        "IRISH_SEA",
-                        "ENGLISH_CHANNEL",
-                        "WEST_MEDITERRANEAN",
-                        "BREST",
-                        "GASCOY",
-                        "PORTUGAL",
-                        "NORTH_AFRICA",
-                        {
-                            "TERRITORY": "SPAIN",
-                            "COAST": 0
-                        },
-                        {
-                            "TERRITORY": "SPAIN",
-                            "COAST": 1
-                        }
-                    ]
+                    "X": 100,
+                    "Y": 664
                 }
             ]
         },
@@ -241,5 +180,10 @@
         "AEGEAN_SEA": "72",
         "EAST_MEDITERRANEAN": "73",
         "BLACK_SEA": "74"
-    }
+    },
+    "LINK": [
+        [
+            ["MID_ATLANTIC", 0], ["SPAIN", 1]
+        ]
+    ]
 }

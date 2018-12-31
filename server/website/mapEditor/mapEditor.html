@@ -7,7 +7,9 @@
     <div>
         <input type="button" value="Create new map" id="newMap"/>
         <input type="button" value="Edit map" id="editMap"/>
+        <input type="button" value="Edit countries" id="editCountry"/>
         <input type="button" value="Add new territory: T" id="newTerritory"/>
+        <label>Show all links: </label><input type="checkbox" id="showAllLinks"/>
     </div>
     <div>
         <label>Territory: </label>
@@ -78,5 +80,39 @@
         <input type="button" value="Remove unit" id="rmUnit"/>
         <input type="button" value="Apply changes" id="addUnit"/>
     </div>
+</div>
+<div id="countryConf" class="editorTool" hidden>
+    <lable>Edit Countries: </lable>
+    <div>
+        <label>Players: </label>
+        <input type="button" value="2" id="playerCount2"/>
+        <input type="button" value="3" id="playerCount3"/>
+        <input type="button" value="4" id="playerCount4"/>
+        <input type="button" value="5" id="playerCount5"/>
+        <input type="button" value="6" id="playerCount6"/>
+        <input type="button" value="7" id="playerCount7"/>
+        <input type="button" value="8" id="playerCount8"/>
+        <input type="button" value="9" id="playerCount9"/>
+    </div>
+    <input type="button" value="return" name="return"/>
+</div>
+<div id="playerCountConf" class="editorTool" hidden>
+    <label>Country: </label>
+    <select id="selectCountry">
+            <option value="temp">temp</option>
+    </select>
+    <label>Territory: </label>
+    <select id="countrySelectTerritory">
+            <option value="temp">temp</option>
+    </select>
+    <input type="button" value="Add territory" id="linkTerritoryCountry"/>
+    <input type="button" value="Add country" id="addPlayerCountCountry"/>
+    <input type="button" value="Remove this country" id="rmPlayerCountCountry"/>
+    <input type="button" value="Disable this player count" id="disablePlayerCount"/>
+</div>
+<div id="playerCountContryConf" class="editorTool" hidden>
+    <label>Name: </label><input type="text" id="playerCountCountryName">
+    <label>Color: </label><input type="text" id="playerCountCountryColor">
+    <input type="button" value="Add country" id="applyPlayerCountCountry">
 </div>
 <script type="module" src="../static/js/mapEditor.js"></script>

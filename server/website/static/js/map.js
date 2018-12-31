@@ -25,8 +25,8 @@ import {MapDraw} from "./mapDraw.js";
 "TYPE"
 "ARMY"
 "FLEET"
-"BORDER"
 "COAST"
+"LINK"
 */
 
 class Unit{
@@ -43,22 +43,29 @@ class Map{
      * @param {string | object} mapData - url to json file containing map infomation or object containing map data
      * @param {string} canvas - id of canvas to draw map on
      * @param {bool} editorMode - will dispaly all connections and positions
+     * @param {function} callback - called after map is finished loading
      */
-    constructor(mapData, canvas, editorMode=false){
+    constructor(mapData, canvas, editorMode=false, callback=null){
         this.editorMode = editorMode;
         this.draw = new MapDraw(canvas);
         this.selectedUnit = null;
         this.selectedUnit2 = null;
+        this.drawAllLinks = false;
+        this.callback = callback;
+        this.drawing = false;
         if(typeof(mapData) == "string"){
             var self = this;
             let req = new XMLHttpRequest();
             req.onreadystatechange = function(){
                 if(this.readyState == 4 && this.status == 200){
                     self.mapData = JSON.parse(this.responseText);
-                    this.onload = 
                     self.img = new Image();
                     self.img.src = self.mapData.IMG;
-                    self.img.onload = () => { self.drawMap() };
+                    self.img.onload = () => { 
+                        self.drawing = true;
+                        self.drawMap();
+                        self.callback();
+                    };
                 }
             }
             req.open("GET", mapData, true);
@@ -67,7 +74,11 @@ class Map{
             this.mapData = mapData;
             this.img = new Image();
             this.img.src = this.mapData.IMG;
-            this.img.onload = () => { this.drawMap() };
+            this.img.onload = () => {
+                this.drawing = true;
+                this.drawMap()
+                self.callback();
+            };
         }else{
             console.error("invalid type passed to Map")
         }
@@ -81,6 +92,15 @@ class Map{
     drawMap(){
         this.draw.clear();
         this.draw.ctx.drawImage(this.img, 0, 0);
+        for(let i = 0; i < this.mapData["LINK"].length; ++i){
+            let link = this.mapData["LINK"][i];
+            if(this.drawAllLinks || this.selectedUnit && (link[0][0] == this.selectedUnit.territoryName && this.selectedUnit.territory["UNIT"][link[0][1]] == this.selectedUnit.unit 
+            || link[1][0] == this.selectedUnit.territoryName && this.selectedUnit.territory["UNIT"][link[1][1]] == this.selectedUnit.unit)){
+                let unit1 = this.mapData["TERRITORY"][link[0][0]]["UNIT"][link[0][1]];
+                let unit2 = this.mapData["TERRITORY"][link[1][0]]["UNIT"][link[1][1]];
+                this.draw.drawLine('gray', unit1.X, unit1.Y, unit2.X, unit2.Y)
+            }
+        }
         for(let [territoryName, territory] of Object.entries(this.mapData["TERRITORY"])){
             if(territory["MARKER"]){
                 this.draw.drawDot('black', territory.MARKER.X, territory.MARKER.Y)
@@ -92,27 +112,14 @@ class Map{
                         this.draw.drawUnit('gray', unit.TYPE[0], unit.X, unit.Y, false, true);
                     }else{
                         this.draw.drawUnit('gray', unit.TYPE[0], unit.X, unit.Y);
-                    }
-                    for(let [key, border] of Object.entries(unit.BORDER)){
-                        let borderTerritory = this.mapData.TERRITORY[border];
-                        if (borderTerritory && borderTerritory.UNIT){
-                            for(let [key, borderUnit] of Object.entries(borderTerritory.UNIT)){
-                                if(borderUnit.TYPE == unit.TYPE){
-                                    for(let [key, borderTerritoryTerritory] of Object.entries(borderUnit.BORDER)){
-                                        if(borderTerritoryTerritory == territoryName){
-                                            this.draw.drawLine('gray', unit.X, unit.Y, borderUnit.X, borderUnit.Y)
-                                            break;
-                                        }
-                                    }
-                                    break;
-                                }
-                            }
-                        }
+                        if(!this.drawAllLinks) continue;
                     }
                 }
             }
         }
-        requestAnimationFrame(() => this.drawMap());
+        if(this.drawing){
+            requestAnimationFrame(() => this.drawMap());
+        }
     }
     /**Finds unit being clicked on and returns it. If none then returns null in all fields
      * @param {float} x 
@@ -146,5 +153,16 @@ class Map{
     secSelectUnit(unit){
         this.selectedUnit2 = unit;
     }
+    setDrawAllLinks(doDraw){
+        this.drawAllLinks = doDraw;
+    }
+    /**Adds new link between the selected units
+     */
+    addNewLink(){
+        if(this.selectedUnit && this.selectedUnit2){
+
+        }
+    }
+
 }
 export {Map, Unit};
