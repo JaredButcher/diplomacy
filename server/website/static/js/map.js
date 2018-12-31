@@ -29,6 +29,14 @@ import {MapDraw} from "./mapDraw.js";
 "COAST"
 */
 
+class Unit{
+    constructor(territoryName, territory, unit){
+        this.territoryName = territoryName;
+        this.territory = territory;
+        this.unit = unit;
+    }
+}
+
 class Map{
     /**
      * Create and manage game map
@@ -39,6 +47,8 @@ class Map{
     constructor(mapData, canvas, editorMode=false){
         this.editorMode = editorMode;
         this.draw = new MapDraw(canvas);
+        this.selectedUnit = null;
+        this.selectedUnit2 = null;
         if(typeof(mapData) == "string"){
             var self = this;
             let req = new XMLHttpRequest();
@@ -78,7 +88,11 @@ class Map{
             if (this.editorMode && territory.UNIT){
                 for(let i = 0; i < territory.UNIT.length; ++i){
                     let unit = territory.UNIT[i];
-                    this.draw.drawUnit('gray', unit.TYPE[0], unit.X, unit.Y)
+                    if ((this.selectedUnit && unit == this.selectedUnit.unit) || (this.selectedUnit2 && unit == this.selectedUnit2.unit)){
+                        this.draw.drawUnit('gray', unit.TYPE[0], unit.X, unit.Y, false, true);
+                    }else{
+                        this.draw.drawUnit('gray', unit.TYPE[0], unit.X, unit.Y);
+                    }
                     for(let [key, border] of Object.entries(unit.BORDER)){
                         let borderTerritory = this.mapData.TERRITORY[border];
                         if (borderTerritory && borderTerritory.UNIT){
@@ -98,15 +112,14 @@ class Map{
                 }
             }
         }
-        console.log("Draw")
         requestAnimationFrame(() => this.drawMap());
     }
     /**Finds unit being clicked on and returns it. If none then returns null in all fields
      * @param {float} x 
      * @param {float} y 
-     * @returns [territoryName, territory, unit]
+     * @returns [territoryName, territory, unit] or null
      */
-    unitSelect(x, y){
+    findUnit(x, y){
         let MAX_DISTANCE = this.mapData["MAX_DISTANCE"]; //Max distance between units within a territory, used to speed up calculations
         for(let [territoryName, territory] of Object.entries(this.mapData["TERRITORY"])){
             if(territory.UNIT){
@@ -117,12 +130,21 @@ class Map{
                         break;
                     }
                     if(Math.sqrt((x-unit.X)**2 + (y-unit.Y)**2) <= MapDraw.UNIT_SIZE()){
-                        return [territoryName, territory, unit];
+                        return new Unit(territoryName, territory, unit);
                     }
                 }
             }
         }
-        return [null, null, null]
+        return null;
+    }
+    /**Sets unit as selected unit
+     * @param {Unit} unit - unit to draw as selected
+     */
+    selectUnit(unit){
+        this.selectedUnit = unit;
+    }
+    secSelectUnit(unit){
+        this.selectedUnit2 = unit;
     }
 }
-export {Map};
+export {Map, Unit};

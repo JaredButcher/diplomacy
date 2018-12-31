@@ -4,10 +4,11 @@
  * @module diplomacy/mapEditor
  */
 
-import {Map} from './map.js';
+import {Map, Unit} from './map.js';
 
 let loadedMap = null;
 let canvas = document.getElementById("mapCanvas");
+let keysDown = {};
 
 function readMap(evt){
     let reader = new FileReader();
@@ -45,20 +46,32 @@ let mouseDown = false;
 document.getElementById('mapCanvas').onmousedown = function(evt){
     if(!mouseDown){
         let rect = canvas.getBoundingClientRect();
-        console.log("X: " + (evt.clientX - rect.left) + " Y: " + (evt.clientY - rect.top));
         mouseDown = true;
         if(loadedMap){
-            let [territoryName, territory, unit] = loadedMap.unitSelect((evt.clientX - rect.left), (evt.clientY - rect.top));
-            console.log("map loaded")
-            console.log(territoryName)
-            console.log(territory)
-            console.log(unit)
+            let unit = loadedMap.findUnit((evt.clientX - rect.left), (evt.clientY - rect.top));
+            if(keysDown["Shift"]){
+                console.log("shift")
+                loadedMap.secSelectUnit(unit);
+            }else{
+                loadedMap.selectUnit(unit);
+                if(!unit){
+                    loadedMap.secSelectUnit(unit);
+                }
+            }
         }
     }
 }
 document.getElementById('mapCanvas').onmouseup = function(evt){
     mouseDown = false;
 }
+document.addEventListener("keydown", (evt) => {
+    if (keysDown[evt.key] == true){ return; }
+    keysDown[evt.key] = true;
+});
+
+document.addEventListener("keyup", (evt) => {
+    keysDown[evt.key] = false;
+});
 
 window.stopStuff = () => {
     loadedMap = null;

@@ -1,35 +1,72 @@
 <canvas id="mapCanvas" height="1000" width="1000"></canvas>
-<div id="mapEditInputContainer">
-    <label>Link:</label>
+<div id="mainEditor" class="editorTool">
     <div>
-        <label>Territory 1: </label>
-        <select id="linkTer1">
-            <option value="temp">temp</option>
-        </select>
-        <label>Unit 1: </label>
-        <select id="linkUnit1">
-                <option value="temp">temp</option>
-        </select>
-        <label>Territory 2: </label>
-        <select id="linkTer2">
-                <option value="temp">temp</option>
-        </select>
-        <label>Unit 2: </label>
-        <select id="linkUnit2">
-                <option value="temp">temp</option>
-        </select>
-        <input type="button" value="Add Link" id="addLink"/>
+        <label>Map data:</label><input type="file" id="mapFile"/>
+        <input type="button" id="saveFile" value="Save File"/>
     </div>
-    <label>Unit:</label>
+    <div>
+        <input type="button" value="Create new map" id="newMap"/>
+        <input type="button" value="Edit map" id="editMap"/>
+        <input type="button" value="Add new territory: T" id="newTerritory"/>
+    </div>
     <div>
         <label>Territory: </label>
-        <select id="unitTer">
+        <select id="selectTerritory">
             <option value="temp">temp</option>
         </select>
+        <label>Unit: </label>
+        <select id="selectUnit">
+                <option value="temp">temp</option>
+        </select>
+        <input type="button" value="Edit territory" id="editTerritory"/>
+        <input type="button" value="Add new unit: U" id="newUnit"/>
+        <input type="button" value="Edit unit" id="editUnit"/>
+    </div>
+    <div>
+        <label>Territory 2: </label>
+        <select id="selectTerritory2">
+            <option value="temp">temp</option>
+        </select>
+        <label>Unit 2: </label>
+        <select id="selectUnit2">
+                <option value="temp">temp</option>
+        </select>
+        <input type="button" value="Add new link: L" id="newLink"/>
+        <input type="button" value="Remove link" id="rmLink"/>
+    </div>
+</div>
+<div id="mapConf" class="editorTool" hidden>
+    <label>Edit Map:</label>
+    <div>
+        <label>Name:</label><input type="text" id="mapName"/>
+        <label>Discription:</label><textarea id="mapDisc"></textarea>
+        <label>Img:</label><input type="url" id="mapImg"/>
+        <label>Img Size X:</label><input class="numberInput" type="number" id="mapX"/>
+        <label>Y:</label><input class="numberInput" type="number" id="mapY"/>
+        <input type="button" value="Apply changes" id="applyMap"/>
+    </div>
+</div>
+<div id="territoryConf" class="editorTool" hidden>
+    <label>Edit Territory:</label>
+    <div>
+        <label>Name:</label><input type="text" id="territoryName"/>
+        <label>Is supply point:</label><input type="checkbox" id="territorySupply"/>
+        <label>Supply Marker X:</label><input class="numberInput" type="number" id="territoryX"/>
+        <label>Y:</label><input class="numberInput" type="number" id="territoryY"/>
+        <input type="button" value="Remove territory" id="rmTerritory"/>
+        <input type="button" value="Apply changes" id="applyTerritory"/>
+    </div>
+</div>
+<div id="unitConf" class="editorTool" hidden>
+    <label>Edit Unit:</label>
+    <div>
+        <p id="unitTerritoryName">Territory: temp</p>
         <label>Army:</label><input type="radio" value="ARMY" name="unitType"/>
         <label>Fleet:</label><input type="radio" value="FLEET" name="unitType"/>
         <label>Marker X:</label><input class="numberInput" type="number" id="unitX"/>
         <label>Y:</label><input class="numberInput" type="number" id="unitY"/>
+        <label>Convoy X:</label><input class="numberInput" type="number" id="unitConvoyX"/>
+        <label>Y:</label><input class="numberInput" type="number" id="unitConvoyY"/>
         <label>Coast ID:</label>
         <select di="unitCoast">
             <option value="None">None</option>
@@ -38,29 +75,8 @@
             <option value="2">2</option>
             <option value="3">3</option>
         </select>
-        <input type="button" value="Add unit" id="addUnit"/>
-    </div>
-    <label>Territory:</label>
-    <div>
-        <label>Name:</label><input type="text" id="terName"/>
-        <label>Is supply point:</label><input type="checkbox" id="terSupply"/>
-        <label>Supply Marker X:</label><input class="numberInput" type="number" id="terX"/>
-        <label>Y:</label><input class="numberInput" type="number" id="terY"/>
-        <input type="button" value="Add territory" id="addTerr"/>
-    </div>
-    <label>Map:</label>
-    <div>
-        <label>Name:</label><input type="text" id="mapName"/>
-        <label>Discription:</label><textarea id="mapDisc"></textarea>
-        <label>Img:</label><input type="url" id="mapImg"/>
-        <label>Img Size X:</label><input class="numberInput" type="number" id="mapX"/>
-        <label>Y:</label><input class="numberInput" type="number" id="mapY"/>
-        <input type="button" value="Create Map" id="createMap"/>
-    </div>
-    <label>File:</label>
-    <div>
-        <label>Map data:</label><input type="file" id="mapFile"/>
-        <input type="button" id="saveFile" value="Save File"/>
+        <input type="button" value="Remove unit" id="rmUnit"/>
+        <input type="button" value="Apply changes" id="addUnit"/>
     </div>
 </div>
 <script type="module" src="../static/js/mapEditor.js"></script>
