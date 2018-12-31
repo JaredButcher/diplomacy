@@ -12,6 +12,10 @@ let keysDown = {};
 let editors = document.getElementsByClassName("editorTool");
 let territoryBeingEdited = null;
 let unitBeingEdited = null;
+let selectTer1 = document.getElementById("selectTerritory");
+let selectTer2 = document.getElementById("selectTerritory2");
+let selectUnit1 = document.getElementById("selectUnit");
+let selectUnit2 = document.getElementById("selectUnit2");
 
 function readMap(evt){
     let reader = new FileReader();
@@ -23,23 +27,59 @@ function readMap(evt){
 document.getElementById("mapFile").addEventListener('change', readMap, false);
 
 function refreshTerritoryDropdowns(){
-    let ter1 = document.getElementById("selectTerritory");
-    let ter2 = document.getElementById("selectTerritory2");
-    ter1.innerHTML = "";
-    ter2.innerHTML = "";
+    selectTer1.innerHTML = "";
+    selectTer2.innerHTML = "";
     let op = document.createElement("option");
     op.text = "None";
-    ter1.options.add(op);
-    ter2.options.add(op.cloneNode(true));
+    selectTer1.options.add(op);
+    selectTer2.options.add(op.cloneNode(true));
     for(let [territoryName, territory] of Object.entries(loadedMap.mapData["TERRITORY"])){
         let op = document.createElement("option");
         op.value = territoryName;
         op.text = territoryName;
-        ter1.options.add(op);
-        ter2.options.add(op.cloneNode(true));
+        selectTer1.options.add(op);
+        selectTer2.options.add(op.cloneNode(true));
     }
 }
-window.refreshTerritoryDropdowns = refreshTerritoryDropdowns;
+
+function refreshUnit1Dropdown(){
+    selectUnit1.innerHTML = "";
+    let op = document.createElement("option");
+    op.text = "None";
+    selectUnit1.options.add(op);
+    if(selectTer1.selectedIndex != 0){
+        let territoryName = selectTer1.options[selectTer1.selectedIndex].value;
+        let units = loadedMap.mapData["TERRITORY"][territoryName]["UNIT"];
+        if(units){
+            for(let i = 0; i < units.length; ++i){
+                let unit = units[i];
+                let op = document.createElement("option");
+                op.value = i;
+                op.text = unit["TYPE"] + " " + i;
+                selectUnit1.options.add(op);
+            }
+        }
+    }
+}
+function refreshUnit2Dropdown(){
+    selectUnit2.innerHTML = "";
+    let op = document.createElement("option");
+    op.text = "None";
+    selectUnit2.options.add(op);
+    if(selectTer2.selectedIndex != 0){
+        let territoryName = selectTer2.options[selectTer2.selectedIndex].value;
+        let units = loadedMap.mapData["TERRITORY"][territoryName]["UNIT"];
+        if(units){
+            for(let i = 0; i < units.length; ++i){
+                let unit = units[i];
+                let op = document.createElement("option");
+                op.value = i;
+                op.text = unit["TYPE"] + " " + i;
+                selectUnit2.options.add(op);
+            }
+        }
+    }
+}
 
 function changeEditor(editorId){
     for(let i = 0; i < editors.length; ++i){
@@ -47,6 +87,55 @@ function changeEditor(editorId){
     }
     document.getElementById(editorId).hidden = false;
 }
+
+function selectUnit(unit, isPrimary=true){
+    if(!isPrimary){
+        loadedMap.secSelectUnit(unit);
+        if(unit){
+            for(let i = 0; i < selectTer2.length; ++i){
+                if(unit.territoryName == selectTer2.options[i].value){
+                    selectTer2.selectedIndex = i;
+                    break;
+                }
+            }
+            refreshUnit2Dropdown()
+            for(let i = 0; i < selectUnit2.length; ++i){
+                if(unit.unitIndex == selectUnit2.options[i].value){
+                    selectUnit2.selectedIndex = i;
+                    break;
+                }
+            }
+        }else{
+            selectTer2.selectedIndex = 0;
+        }
+    }else{
+        loadedMap.selectUnit(unit);
+        if(!unit){
+            loadedMap.secSelectUnit(unit);
+            selectTer1.selectedIndex = 0;
+            selectTer2.selectedIndex = 0;
+            selectUnit1.selectedIndex = 0;
+            selectUnit2.selectedIndex = 0;
+            refreshUnit1Dropdown()
+            refreshUnit2Dropdown()
+        } else {
+            for(let i = 0; i < selectTer1.length; ++i){
+                if(unit.territoryName == selectTer1.options[i].value){
+                    selectTer1.selectedIndex = i;
+                    break;
+                }
+            }
+            refreshUnit1Dropdown();
+            for(let i = 0; i < selectUnit1.length; ++i){
+                if(unit.unitIndex == selectUnit1.options[i].value){
+                    selectUnit1.selectedIndex = i;
+                    break;
+                }
+            }
+        }
+    }
+}
+
 document.getElementById("editMap").onclick = () => {
     changeEditor("mapConf");
 };
@@ -80,11 +169,27 @@ document.getElementById("editUnit").onclick = () => {
         changeEditor("unitConf");
     }
 };
+selectTer1.onchange = () => {
+    refreshUnit1Dropdowns();
+};
+selectTer2.onchange = () => {
+    refreshUnit2Dropdowns();
+};
+selectUnit1.onchange = (evt) => {
+    let territoryName = selectTer1.options[selectTer1.selectedIndex].value;
+    let territory = loadedMap.mapData["TERRITORY"][territoryName];
+    selectUnit(new Unit(territoryName, territory, evt.target.value, territory["UNIT"][evt.target.value]));
+};
+selectUnit2.onchange = (evt) => {
+    let territoryName = selectTer2.options[selectTer2.selectedIndex].value;
+    let territory = loadedMap.mapData["TERRITORY"][territoryName];
+    selectUnit(new Unit(territoryName, territory, evt.target.value, territory["UNIT"][evt.target.value]), false);
+};
 document.getElementById("newLink").onclick = () => {
 
 };
 document.getElementById("rmLink").onclick = () => {
-    
+
 };
 
 //Loads default map
@@ -106,7 +211,6 @@ document.getElementById("saveFile").onclick = (evt) => {
     element.click();
     document.body.removeChild(element);
 };
-
 let mouseDown = false;
 document.getElementById('mapCanvas').onmousedown = function(evt){
     if(!mouseDown){
@@ -114,15 +218,7 @@ document.getElementById('mapCanvas').onmousedown = function(evt){
         mouseDown = true;
         if(loadedMap){
             let unit = loadedMap.findUnit((evt.clientX - rect.left), (evt.clientY - rect.top));
-            if(keysDown["Shift"]){
-                console.log("shift")
-                loadedMap.secSelectUnit(unit);
-            }else{
-                loadedMap.selectUnit(unit);
-                if(!unit){
-                    loadedMap.secSelectUnit(unit);
-                }
-            }
+            selectUnit(unit, !keysDown["Shift"]);
         }
     }
 }

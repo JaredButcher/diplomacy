@@ -30,9 +30,10 @@ import {MapDraw} from "./mapDraw.js";
 */
 
 class Unit{
-    constructor(territoryName, territory, unit){
+    constructor(territoryName, territory, unitIndex, unit){
         this.territoryName = territoryName;
         this.territory = territory;
+        this.unitIndex = unitIndex;
         this.unit = unit;
     }
 }
@@ -137,7 +138,7 @@ class Map{
                         break;
                     }
                     if(Math.sqrt((x-unit.X)**2 + (y-unit.Y)**2) <= MapDraw.UNIT_SIZE()){
-                        return new Unit(territoryName, territory, unit);
+                        return new Unit(territoryName, territory, i, unit);
                     }
                 }
             }
