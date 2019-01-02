@@ -36,6 +36,9 @@ class Unit{
         this.unitIndex = unitIndex;
         this.unit = unit;
     }
+    isInLink(link){
+        return link[0][0] == this.territoryName && link[0][1] == this.unitIndex || link[1][0] == this.territoryName && link[1][1] == this.unitIndex;
+    }
 }
 
 class Map{
@@ -157,11 +160,27 @@ class Map{
     setDrawAllLinks(doDraw){
         this.drawAllLinks = doDraw;
     }
-    /**Adds new link between the selected units
+    /**Adds new link between the selected units, will not add repeat link
+     * @param {Unit} unit1
+     * @param {Unit} unit2
      */
-    addNewLink(){
-        if(this.selectedUnit && this.selectedUnit2){
-
+    addNewLink(unit1, unit2){
+        let links = this.mapData["LINK"];
+        for(let link of links){
+            if(unit1.isInLink(link) && unit2.isInLink(link)){ return; }
+        }
+        links.push([[unit1.territoryName, unit1.unitIndex], [unit2.territoryName, unit2.unitIndex]])
+    }
+    /**Removes link between given units
+     * @param {Unit} unit1
+     * @param {Unit} unit2
+     */
+    rmLink(unit1, unit2){
+        let links = this.mapData["LINK"];
+        for(let i in links){
+            if(unit1.isInLink(links[i]) && unit2.isInLink(links[i])){
+                links.splice(i, 1);
+            }
         }
     }
 

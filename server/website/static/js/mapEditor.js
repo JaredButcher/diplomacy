@@ -1,5 +1,5 @@
 /**
- * Run all client side game logic
+ * Interface for map editor
  * @author Jared Butcher <jared.butcher1219@gmail.com>
  * @module diplomacy/mapEditor
  */
@@ -17,6 +17,9 @@ let selectTer2 = document.getElementById("selectTerritory2");
 let selectUnit1 = document.getElementById("selectUnit");
 let selectUnit2 = document.getElementById("selectUnit2");
 
+/**Reads local map data and creates a new Map object from it
+ * @param {Object} evt - onchange event object containing file name
+ */
 function readMap(evt){
     let reader = new FileReader();
     reader.onload = (file) => {
@@ -25,7 +28,8 @@ function readMap(evt){
     reader.readAsText(evt.target.files[0]);
 }
 document.getElementById("mapFile").addEventListener('change', readMap, false);
-
+/**Updates the values in the dropdowns for territory selection based on the maps territory data
+ */
 function refreshTerritoryDropdowns(){
     selectTer1.innerHTML = "";
     selectTer2.innerHTML = "";
@@ -41,14 +45,17 @@ function refreshTerritoryDropdowns(){
         selectTer2.options.add(op.cloneNode(true));
     }
 }
-
-function refreshUnit1Dropdown(){
-    selectUnit1.innerHTML = "";
+/**Updates the values in unit selection dropdown to match the selected territory
+ * @param {object} territorySelect - The territory selector dropdown
+ * @param {object} unitSelect - The unit selector dropdown
+ */
+function refreshUnitDropdown(territorySelect, unitSelect){
+    unitSelect.innerHTML = "";
     let op = document.createElement("option");
     op.text = "None";
-    selectUnit1.options.add(op);
-    if(selectTer1.selectedIndex != 0){
-        let territoryName = selectTer1.options[selectTer1.selectedIndex].value;
+    unitSelect.options.add(op);
+    if(territorySelect.selectedIndex != 0){
+        let territoryName = territorySelect.options[territorySelect.selectedIndex].value;
         let units = loadedMap.mapData["TERRITORY"][territoryName]["UNIT"];
         if(units){
             for(let i = 0; i < units.length; ++i){
@@ -56,40 +63,51 @@ function refreshUnit1Dropdown(){
                 let op = document.createElement("option");
                 op.value = i;
                 op.text = unit["TYPE"] + " " + i;
-                selectUnit1.options.add(op);
+                unitSelect.options.add(op);
             }
         }
     }
 }
-function refreshUnit2Dropdown(){
-    selectUnit2.innerHTML = "";
-    let op = document.createElement("option");
-    op.text = "None";
-    selectUnit2.options.add(op);
-    if(selectTer2.selectedIndex != 0){
-        let territoryName = selectTer2.options[selectTer2.selectedIndex].value;
-        let units = loadedMap.mapData["TERRITORY"][territoryName]["UNIT"];
-        if(units){
-            for(let i = 0; i < units.length; ++i){
-                let unit = units[i];
-                let op = document.createElement("option");
-                op.value = i;
-                op.text = unit["TYPE"] + " " + i;
-                selectUnit2.options.add(op);
-            }
-        }
-    }
-}
-
+/**Hides all editor and displays selected one
+ * @param {string} editorId - id tag of editor to dispaly
+ */
 function changeEditor(editorId){
     for(let i = 0; i < editors.length; ++i){
         editors[i].hidden = true;
     }
     document.getElementById(editorId).hidden = false;
 }
-
+/**Updates Map object's selection and updates dropdowns to display selection
+ * @param {Unit} unit - unit to select
+ * @param {boolean} isPrimary - is this the primary or secondary(shift) select
+ */
 function selectUnit(unit, isPrimary=true){
-    if(!isPrimary){
+    if(isPrimary){
+        loadedMap.selectUnit(unit);
+        if(!unit){
+            loadedMap.secSelectUnit(unit);
+            selectTer1.selectedIndex = 0;
+            selectTer2.selectedIndex = 0;
+            selectUnit1.selectedIndex = 0;
+            selectUnit2.selectedIndex = 0;
+            refreshUnitDropdown(selectTer1, selectUnit1);
+            refreshUnitDropdown(selectTer2, selectUnit2);
+        } else {
+            for(let i = 0; i < selectTer1.length; ++i){
+                if(unit.territoryName == selectTer1.options[i].value){
+                    selectTer1.selectedIndex = i;
+                    break;
+                }
+            }
+            refreshUnitDropdown(selectTer1, selectUnit1);
+            for(let i = 0; i < selectUnit1.length; ++i){
+                if(unit.unitIndex == selectUnit1.options[i].value){
+                    selectUnit1.selectedIndex = i;
+                    break;
+                }
+            }
+        }
+    }else{
         loadedMap.secSelectUnit(unit);
         if(unit){
             for(let i = 0; i < selectTer2.length; ++i){
@@ -98,7 +116,7 @@ function selectUnit(unit, isPrimary=true){
                     break;
                 }
             }
-            refreshUnit2Dropdown()
+            refreshUnitDropdown(selectTer2, selectUnit2);
             for(let i = 0; i < selectUnit2.length; ++i){
                 if(unit.unitIndex == selectUnit2.options[i].value){
                     selectUnit2.selectedIndex = i;
@@ -108,31 +126,6 @@ function selectUnit(unit, isPrimary=true){
         }else{
             selectTer2.selectedIndex = 0;
         }
-    }else{
-        loadedMap.selectUnit(unit);
-        if(!unit){
-            loadedMap.secSelectUnit(unit);
-            selectTer1.selectedIndex = 0;
-            selectTer2.selectedIndex = 0;
-            selectUnit1.selectedIndex = 0;
-            selectUnit2.selectedIndex = 0;
-            refreshUnit1Dropdown()
-            refreshUnit2Dropdown()
-        } else {
-            for(let i = 0; i < selectTer1.length; ++i){
-                if(unit.territoryName == selectTer1.options[i].value){
-                    selectTer1.selectedIndex = i;
-                    break;
-                }
-            }
-            refreshUnit1Dropdown();
-            for(let i = 0; i < selectUnit1.length; ++i){
-                if(unit.unitIndex == selectUnit1.options[i].value){
-                    selectUnit1.selectedIndex = i;
-                    break;
-                }
-            }
-        }
     }
 }
 
@@ -140,7 +133,8 @@ document.getElementById("editMap").onclick = () => {
     changeEditor("mapConf");
 };
 document.getElementById("newMap").onclick = () => {
-    console.warn("TODO: create new map");
+    //TODO: create new map
+    console.warn("not implemented");
     changeEditor("mapConf");
 };
 document.getElementById("editCountry").onclick = () => {
@@ -170,10 +164,10 @@ document.getElementById("editUnit").onclick = () => {
     }
 };
 selectTer1.onchange = () => {
-    refreshUnit1Dropdowns();
+    refreshUnitDropdown(selectTer1, selectUnit1);
 };
 selectTer2.onchange = () => {
-    refreshUnit2Dropdowns();
+    rrefreshUnitDropdown(selectTer2, selectUnit2);
 };
 selectUnit1.onchange = (evt) => {
     let territoryName = selectTer1.options[selectTer1.selectedIndex].value;
@@ -186,10 +180,14 @@ selectUnit2.onchange = (evt) => {
     selectUnit(new Unit(territoryName, territory, evt.target.value, territory["UNIT"][evt.target.value]), false);
 };
 document.getElementById("newLink").onclick = () => {
-
+    if(loadedMap.selectedUnit && loadedMap.selectedUnit2){
+        loadedMap.addNewLink(loadedMap.selectedUnit, loadedMap.selectedUnit2);
+    }
 };
 document.getElementById("rmLink").onclick = () => {
-
+    if(loadedMap.selectedUnit && loadedMap.selectedUnit2){
+        loadedMap.rmLink(loadedMap.selectedUnit, loadedMap.selectedUnit2);
+    }
 };
 
 //Loads default map
@@ -212,7 +210,7 @@ document.getElementById("saveFile").onclick = (evt) => {
     document.body.removeChild(element);
 };
 let mouseDown = false;
-document.getElementById('mapCanvas').onmousedown = function(evt){
+document.getElementById('mapCanvas').onmousedown = (evt) => {
     if(!mouseDown){
         let rect = canvas.getBoundingClientRect();
         mouseDown = true;
