@@ -55,6 +55,8 @@
         <label>Is supply point:</label><input type="checkbox" id="territorySupply"/>
         <label>Supply Marker X:</label><input class="numberInput" type="number" id="territoryX"/>
         <label>Y:</label><input class="numberInput" type="number" id="territoryY"/>
+        <label>Convoy point X:</label><input class="numberInput" type="number" id="territoryConvoyX"/>
+        <label>Y:</label><input class="numberInput" type="number" id="territoryConvoyY"/>
         <input type="button" value="Remove territory" id="rmTerritory"/>
         <input type="button" value="Apply changes" id="applyTerritory"/>
     </div>
@@ -67,10 +69,8 @@
         <label>Fleet:</label><input type="radio" value="FLEET" name="unitType"/>
         <label>Marker X:</label><input class="numberInput" type="number" id="unitX"/>
         <label>Y:</label><input class="numberInput" type="number" id="unitY"/>
-        <label>Convoy X:</label><input class="numberInput" type="number" id="unitConvoyX"/>
-        <label>Y:</label><input class="numberInput" type="number" id="unitConvoyY"/>
         <label>Coast ID:</label>
-        <select di="unitCoast">
+        <select id="unitCoast">
             <option value="None">None</option>
             <option value="0">0</option>
             <option value="1">1</option>
@@ -78,7 +78,7 @@
             <option value="3">3</option>
         </select>
         <input type="button" value="Remove unit" id="rmUnit"/>
-        <input type="button" value="Apply changes" id="addUnit"/>
+        <input type="button" value="Apply changes" id="applyUnit"/>
     </div>
 </div>
 <div id="countryConf" class="editorTool" hidden>

@@ -10,8 +10,8 @@ let loadedMap = null;
 let canvas = document.getElementById("mapCanvas");
 let keysDown = {};
 let editors = document.getElementsByClassName("editorTool");
-let territoryBeingEdited = null;
-let unitBeingEdited = null;
+let currentEditor = "mainEditor";
+let currentEdited = null;
 let selectTer1 = document.getElementById("selectTerritory");
 let selectTer2 = document.getElementById("selectTerritory2");
 let selectUnit1 = document.getElementById("selectUnit");
@@ -69,9 +69,11 @@ function refreshUnitDropdown(territorySelect, unitSelect){
     }
 }
 /**Hides all editor and displays selected one
- * @param {string} editorId - id tag of editor to dispaly
+ * @param {string} editorId - id tag of editor to display
+ * mainEditor, mapConf, territoryConf, unitConf, countryConf, playerCountConf, playerCountContryConf
  */
 function changeEditor(editorId){
+    currentEditor = editorId;
     for(let i = 0; i < editors.length; ++i){
         editors[i].hidden = true;
     }
@@ -141,7 +143,7 @@ document.getElementById("editCountry").onclick = () => {
     changeEditor("countryConf");
 };
 document.getElementById("newTerritory").onclick = () => {
-    territoryBeingEdited = null;
+    currentEdited = new Unit(null, {"MARKER":{},"UNIT":[]}, null, null);
     changeEditor("territoryConf");
 };
 document.getElementById("showAllLinks").onclick = (evt) => {
@@ -149,25 +151,76 @@ document.getElementById("showAllLinks").onclick = (evt) => {
 };
 document.getElementById("editTerritory").onclick = () => {
     if(loadedMap.selectedUnit){
-        territoryBeingEdited = loadedMap.selectedUnit;
+        currentEdited = loadedMap.selectedUnit;
         changeEditor("territoryConf");
     }
 };
 document.getElementById("newUnit").onclick = () => {
-    unitBeingEdited = null;
-    changeEditor("unitConf");
-};
-document.getElementById("editUnit").onclick = () => {
     if(loadedMap.selectedUnit){
-        unitBeingEdited = loadedMap.selectedUnit;
+        currentEdited = new Unit(loadedMap.selectedUnit.territoryName, loadedMap.selectedUnit.territory, null, {"TYPE":null,"X":null,"Y":null});
+        document.getElementById("unitTerritoryName").innerText = "Territory: " + currentEdited.territoryName;
         changeEditor("unitConf");
     }
 };
+document.getElementById("editUnit").onclick = () => {
+    if(loadedMap.selectedUnit){
+        currentEdited = loadedMap.selectedUnit;
+        document.getElementById("unitTerritoryName").innerText = "Territory: " + currentEdited.territoryName;
+        for(let elm of document.getElementsByName("unitType")){
+            if(elm.value == currentEdited.unit["TYPE"]){
+                elm.checked = true;
+                break;
+            }
+        }
+        document.getElementById("unitX").value = currentEdited.unit["X"];
+        document.getElementById("unitY").value = currentEdited.unit["Y"];
+        let coast = document.getElementById("unitCoast");
+        if(currentEdited.unit["COAST"] != null){
+            for(let i in coast.options){
+                if(currentEdited.unit["COAST"] == coast.options[i].value){
+                    coast.selectedIndex = i;
+                }
+            }
+        }else{
+            coast.selectedIndex = 0;
+        }
+
+        changeEditor("unitConf");
+    }
+};
+document.getElementById("applyUnit").onclick = () => {
+    currentEdited.unit["TYPE"] = document.querySelector('input[name=unitType]:checked').value;
+    let coast = document.getElementById("unitCoast").value;
+    if(coast != "None"){
+        currentEdited.unit["COAST"] = parseInt(coast);
+    }
+    if(currentEdited.unit["TYPE"] && currentEdited.unit["X"] && currentEdited.unit["Y"]){
+        loadedMap.addUnit(currentEdited);
+    }else{
+        console.warn("Unit not added");
+    }
+    changeEditor("mainEditor");
+};
+document.getElementById("rmUnit").onclick = () => {
+    if(currentEdited.unitIndex != null){
+        console.log("Remove")
+        loadedMap.rmUnit(currentEdited);
+    }
+    changeEditor("mainEditor");
+}
 selectTer1.onchange = () => {
+    if(selectTer1.selectedIndex != 0){
+        let territoryName = selectTer1.options[selectTer1.selectedIndex].value;
+        loadedMap.selectUnit(new Unit(territoryName, loadedMap.mapData["TERRITORY"][territoryName], null, null));
+    }
     refreshUnitDropdown(selectTer1, selectUnit1);
 };
 selectTer2.onchange = () => {
-    rrefreshUnitDropdown(selectTer2, selectUnit2);
+    if(selectTer2.selectedIndex != 0){
+        let territoryName = selectTer2.options[selectTer2.selectedIndex].value;
+        loadedMap.secSelectUnit(new Unit(territoryName, loadedMap.mapData["TERRITORY"][territoryName], null, null));
+    }
+    refreshUnitDropdown(selectTer2, selectUnit2);
 };
 selectUnit1.onchange = (evt) => {
     let territoryName = selectTer1.options[selectTer1.selectedIndex].value;
@@ -189,12 +242,10 @@ document.getElementById("rmLink").onclick = () => {
         loadedMap.rmLink(loadedMap.selectedUnit, loadedMap.selectedUnit2);
     }
 };
-
 //Loads default map
 document.addEventListener('DOMContentLoaded', () => {
     loadedMap = new Map('/static/maps/defaultMap.json', 'mapCanvas', true, refreshTerritoryDropdowns);
 });
-
 document.getElementById("saveFile").onclick = (evt) => {
     let mapData = loadedMap.getMapData();
     if(!mapData || !mapData.NAME){
@@ -214,9 +265,16 @@ document.getElementById('mapCanvas').onmousedown = (evt) => {
     if(!mouseDown){
         let rect = canvas.getBoundingClientRect();
         mouseDown = true;
-        if(loadedMap){
+        if(loadedMap && currentEditor == "mainEditor"){
             let unit = loadedMap.findUnit((evt.clientX - rect.left), (evt.clientY - rect.top));
             selectUnit(unit, !keysDown["Shift"]);
+        } else if(currentEditor == "unitConf"){
+            currentEdited.unit["X"] = (evt.clientX - rect.left);
+            currentEdited.unit["Y"] = (evt.clientY - rect.top);
+            document.getElementById("unitX").value = currentEdited.unit["X"];
+            document.getElementById("unitY").value = currentEdited.unit["Y"];
+        } else if(currentEditor == "territoryConf"){
+
         }
     }
 }

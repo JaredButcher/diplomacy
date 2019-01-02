@@ -183,6 +183,55 @@ class Map{
             }
         }
     }
-
+    /**Adds given unit to map
+     * @param {Unit} unit 
+     */
+    addUnit(unit){
+        if(typeof(unit.territory) != "object"){
+            unit.territory = {"UNIT": []};
+            this.mapData["TERRITORY"][unit.territoryName] = unit.territory;
+        }
+        for(let otherUnit of unit.territory["UNIT"]){
+            if(unit != otherUnit && otherUnit["TYPE"] == unit.unit["TYPE"] && (otherUnit["COAST"] == null || unit.unit["COAST"] == null)){
+                console.warn("Cannot add repeat type unit without coast defined")
+                return;
+            }
+        }
+        if(unit.unitIndex){
+            this.mapData["TERRITORY"][unit.territoryName]["UNIT"][unit.unitIndex] = unit.unit;
+        }else{
+            this.mapData["TERRITORY"][unit.territoryName]["UNIT"].push(unit.unit);
+        }
+    }
+    /**Removes given unit
+     * @param {Unit} unit 
+     */
+    rmUnit(unit){
+        if(unit.unitIndex != null){
+            this.mapData["TERRITORY"][unit.territoryName]["UNIT"].splice(unit.unitIndex, 1);
+            let links = this.mapData["LINK"];
+            for(let i in links){
+                if(unit.isInLink(links[i])){
+                    links.splice(i, 1);
+                }
+            }
+            let units = unit.territory["UNIT"];
+            for(let i in units){
+                if(i >= unit.unitIndex){
+                    let misplacedUnit = new Unit(unit.territoryName, unit.territory, i + 1, units[i]);
+                    for(let link of links){
+                        if(misplacedUnit.isInLink(link)){
+                            if(link[0][0] == misplacedUnit.territoryName && link[0][1] == misplacedUnit.unitIndex){
+                                link[0][1] = i;
+                            }
+                            if(link[1][0] == misplacedUnit.territoryName && link[1][1] == misplacedUnit.unitIndex){
+                                link[1][1] = i;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 export {Map, Unit};
