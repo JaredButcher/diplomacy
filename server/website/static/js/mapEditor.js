@@ -143,7 +143,7 @@ document.getElementById("editCountry").onclick = () => {
     changeEditor("countryConf");
 };
 document.getElementById("newTerritory").onclick = () => {
-    currentEdited = new Unit(null, {"MARKER":{},"UNIT":[]}, null, null);
+    currentEdited = new Unit(null, {"UNIT":[]}, null, null);
     changeEditor("territoryConf");
 };
 document.getElementById("showAllLinks").onclick = (evt) => {
@@ -152,6 +152,17 @@ document.getElementById("showAllLinks").onclick = (evt) => {
 document.getElementById("editTerritory").onclick = () => {
     if(loadedMap.selectedUnit){
         currentEdited = loadedMap.selectedUnit;
+        document.getElementById("territoryName").value = currentEdited.territoryName;
+        if(currentEdited.territory["MARKER"]){
+            document.getElementById("territorySupply").checked = true;
+            document.getElementById("territoryX").value = currentEdited.territory["MARKER"]["X"];
+            document.getElementById("territoryY").value = currentEdited.territory["MARKER"]["Y"];
+        }
+        if(currentEdited.territory["CONVOY"]){
+            document.getElementById("territoryConvoy").checked = true;
+            document.getElementById("territoryConvoyX").value = currentEdited.territory["CONVOY"]["X"];
+            document.getElementById("territoryConvoyY").value = currentEdited.territory["CONVOY"]["Y"];
+        }
         changeEditor("territoryConf");
     }
 };
@@ -207,7 +218,7 @@ document.getElementById("rmUnit").onclick = () => {
         loadedMap.rmUnit(currentEdited);
     }
     changeEditor("mainEditor");
-}
+};
 selectTer1.onchange = () => {
     if(selectTer1.selectedIndex != 0){
         let territoryName = selectTer1.options[selectTer1.selectedIndex].value;
@@ -242,6 +253,27 @@ document.getElementById("rmLink").onclick = () => {
         loadedMap.rmLink(loadedMap.selectedUnit, loadedMap.selectedUnit2);
     }
 };
+document.getElementById("applyTerritory").onclick = () => {
+    currentEdited.territoryName = document.getElementById("territoryName").value;
+    if(document.getElementById("territorySupply").checked){
+        currentEdited.territory["MARKER"] = {"X": document.getElementById("territoryX").value, "Y": document.getElementById("territoryY").value};
+    }
+    if(document.getElementById("territoryConvoy").checked){
+        currentEdited.territory["CONVOY"] = {"X": document.getElementById("territoryConvoyX").value, "Y": document.getElementById("territoryConvoyY").value};
+    }
+    if(currentEdited.territoryName != null){
+        loadedMap.applyTerritory(currentEdited);
+    }
+    refreshTerritoryDropdowns();
+    changeEditor("mainEditor");
+};
+document.getElementById("rmTerritory").onclick = () => {
+    if(currentEdited.territoryName != null){
+        loadedMap.rmTerritory(currentEdited);
+        refreshTerritoryDropdowns();
+    }
+    changeEditor("mainEditor");
+}
 //Loads default map
 document.addEventListener('DOMContentLoaded', () => {
     loadedMap = new Map('/static/maps/defaultMap.json', 'mapCanvas', true, refreshTerritoryDropdowns);

@@ -30,6 +30,13 @@ import {MapDraw} from "./mapDraw.js";
 */
 
 class Unit{
+    /**Used to hold and compare basic infomation about units
+     * Any value can be null, unit values can be null to hold territory info
+     * @param {string} territoryName 
+     * @param {object} territory - territory object as found in the map data
+     * @param {number} unitIndex - index of unit in territory's unit list
+     * @param {object} unit - unit object as found in map data
+     */
     constructor(territoryName, territory, unitIndex, unit){
         this.territoryName = territoryName;
         this.territory = territory;
@@ -177,7 +184,7 @@ class Map{
      */
     rmLink(unit1, unit2){
         let links = this.mapData["LINK"];
-        for(let i in links){
+        for(let i = links.length - 1; i >= 0; --i){
             if(unit1.isInLink(links[i]) && unit2.isInLink(links[i])){
                 links.splice(i, 1);
             }
@@ -210,7 +217,7 @@ class Map{
         if(unit.unitIndex != null){
             this.mapData["TERRITORY"][unit.territoryName]["UNIT"].splice(unit.unitIndex, 1);
             let links = this.mapData["LINK"];
-            for(let i in links){
+            for(let i = links.length - 1; i >= 0; --i){
                 if(unit.isInLink(links[i])){
                     links.splice(i, 1);
                 }
@@ -230,6 +237,39 @@ class Map{
                         }
                     }
                 }
+            }
+        }
+    }
+    /**Applies changes or adds territory
+     * @param {Unit} territory - given as unit, unit values are null
+     */
+    applyTerritory(territory){
+        if(this.mapData["TERRITORY"][territory.territoryName] == undefined || typeof(this.mapData["TERRITORY"][territory.territoryName]) != "object"){
+            this.mapData["TERRITORY"][territory.territoryName] = territory.territory;
+        }else{
+            let storedTerritory = this.mapData["TERRITORY"][territory.territoryName]
+            storedTerritory["NAME"] = territory.territoryName;
+            if(territory.territory["MARKER"]){
+                storedTerritory["MARKER"] = territory.territory["MARKER"];
+            }else if(storedTerritory["MARKER"]){
+                delete storedTerritory["MARKER"];
+            }
+            if(territory.territory["CONVOY"]){
+                storedTerritory["CONVOY"] = territory.territory["CONVOY"];
+            }else if(storedTerritory["CONVOY"]){
+                delete storedTerritory["CONVOY"];
+            }
+        }
+    }
+    /**Remove territory if it exists
+     * @param {Unit} territory - given as unit, unit values are null
+     */
+    rmTerritory(territory){
+        delete this.mapData["TERRITORY"][territory.territoryName];
+        let links = this.mapData["LINK"];
+        for(let i = links.length - 1; i >= 0; --i){
+            if(links[i][0][0] == territory.territoryName || links[i][1][0] == territory.territoryName){
+                links.splice(i, 1);
             }
         }
     }
