@@ -16,6 +16,7 @@ let selectTer1 = document.getElementById("selectTerritory");
 let selectTer2 = document.getElementById("selectTerritory2");
 let selectUnit1 = document.getElementById("selectUnit");
 let selectUnit2 = document.getElementById("selectUnit2");
+let currentCPC = null;
 
 /**Reads local map data and creates a new Map object from it
  * @param {Object} evt - onchange event object containing file name
@@ -274,6 +275,9 @@ document.getElementById("rmTerritory").onclick = () => {
     }
     changeEditor("mainEditor");
 }
+document.getElementById("countryConfReturn").onclick = () => {
+    changeEditor("mainEditor");
+}
 //Loads default map
 document.addEventListener('DOMContentLoaded', () => {
     loadedMap = new Map('/static/maps/defaultMap.json', 'mapCanvas', true, refreshTerritoryDropdowns);
@@ -330,3 +334,32 @@ document.addEventListener("keydown", (evt) => {
 document.addEventListener("keyup", (evt) => {
     keysDown[evt.key] = false;
 });
+let playerCountButtons = document.querySelectorAll("input[name=playerCount]");
+for(let button of playerCountButtons){
+    button.onclick = () => {
+        currentCPC = button.value;
+        let editor = document.getElementById("playerCountConf");
+        for(let elm of editor.querySelectorAll("div[name=playerCountCountryConf]")){
+            editor.removeChild(elm);
+        }
+        for(let i = 0; i < currentCPC; ++i){
+            let CPCId = "CPCId" + i;
+            let inputFields = `<div name="playerCountCountryConf">
+                                    <label>Name: </label><input type="text" class="${CPCId}" name="playerCountCountryName">
+                                    <label>Color: </label><input type="text" class="${CPCId}" name="playerCountCountryColor">
+                                    <p class="${CPCId}" name="listPlayerCountUnits"></p>
+                                    <label>Territory: </label>
+                                    <select class="${CPCId}" name="countrySelectTerritory">
+                                        <option value="temp">temp</option>
+                                    </select>
+                                    <select class="${CPCId}" name="countrySelectUnit">
+                                        <option value="temp">temp</option>
+                                    </select>
+                                    <input type="button" value="Remove territory" class="${CPCId}" name="rmLinkTerritoryCountry"/>
+                                    <input type="button" value="Add territory" class="${CPCId}" name="linkTerritoryCountry"/>
+                                </div>`
+            editor.innerHTML = inputFields + editor.innerHTML;
+        }
+        changeEditor("playerCountConf");
+    }
+}

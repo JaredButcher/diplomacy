@@ -15,3 +15,6 @@
 #mapEditInputContainer > *{
     background-color: white;
 }
+.countNotInUse{
+    background-color: #666;
+}

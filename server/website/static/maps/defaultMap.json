@@ -1,7 +1,16 @@
 {"NAME":"Europe","DISCRIPTION":"The default map of Diplomacy","IMG":"/static/img/defaultMap.svg","SIZE":{"X":1000,"Y":1000},"MAX_DISTANCE":500,
-"COUNTRY":{"7":{"AUSTRIA":{"ID":"0","COLOR":"#f00",
-    "TERRITORY":{"VIENNA":"ARMY","BUDAPEST":"ARMY","TRIESTE":"FLEET"}},"ENGLAND":"1","FRANCE":"2","GERMANY":"3","ITALY":"4","RUSSIA":"5","TURKEY":"6"}},
-    "TERRITORY":{
+"COUNTRY":{
+    "7":{
+        "AUSTRIA":{"COLOR":"#f00","TERRITORY":[["VIENNA","ARMY"],["BUDAPEST","ARMY"],["TRIESTE","FLEET"]]},
+        "ENGLAND":{"COLOR":"#000", "TERRITORY":[]},
+        "FRANCE":{"COLOR":"#000", "TERRITORY":[]},
+        "GERMANY":{"COLOR":"#000", "TERRITORY":[]},
+        "ITALY":{"COLOR":"#000", "TERRITORY":[]},
+        "RUSSIA":{"COLOR":"#000", "TERRITORY":[]},
+        "TURKEY":{"COLOR":"#000", "TERRITORY":[]}
+        }
+    },
+"TERRITORY":{
 "ANKARA":{"UNIT":[]},
 "BELGIUM":{"UNIT":[]},
 "BERLIN":{"UNIT":[]},
