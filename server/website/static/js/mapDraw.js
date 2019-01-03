@@ -87,8 +87,8 @@ class MapDraw{
      * @param {int} sY - fleet location y
      * @param {int} cX - desninated convoy point x
      * @param {int} cY - desinated convoy point y
-     * @param {int} dX - neighboring destination x
-     * @param {int} dY - neighboring destination y
+     * @param {int} dX - destination x
+     * @param {int} dY - destination y
      */
     drawConvoyRoute(color, isFinal, sX, sY, cX, cY, dX, dY){
         this.ctx.beginPath();
@@ -107,7 +107,10 @@ class MapDraw{
             this.ctx.quadraticCurveTo(stepX * (i + .5) + sX + offsetX * direction, stepY * (i + .5) + sY + offsetY * direction, stepX*(i+1) + sX, stepY*(i+1) + sY);
         }
         this.ctx.stroke();
-        (isFinal) ? this.drawArrow(color, false, cX, cY, dX, dY) : this.drawLine(color, cX, cY, dX, dY);
+        this.drawDot(color, cX, cY, this.UNIT_SIZE / 2);
+        if(dX != null){
+            (isFinal) ? this.drawArrow(color, false, cX, cY, dX, dY) : this.drawLine(color, cX, cY, dX, dY);
+        }
     }
 
     /**

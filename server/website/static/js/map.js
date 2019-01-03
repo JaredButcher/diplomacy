@@ -103,6 +103,7 @@ class Map{
     drawMap(){
         this.draw.clear();
         this.draw.ctx.drawImage(this.img, 0, 0);
+        //Draw links
         for(let i = 0; i < this.mapData["LINK"].length; ++i){
             let link = this.mapData["LINK"][i];
             if(this.drawAllLinks || this.selectedUnit && (link[0][0] == this.selectedUnit.territoryName && this.selectedUnit.territory["UNIT"][link[0][1]] == this.selectedUnit.unit 
@@ -113,17 +114,22 @@ class Map{
             }
         }
         for(let [territoryName, territory] of Object.entries(this.mapData["TERRITORY"])){
+            //Draw supply points
             if(territory["MARKER"]){
                 this.draw.drawDot('black', territory.MARKER.X, territory.MARKER.Y)
             }
-            if (this.editorMode && territory.UNIT){
+            //Draw units
+            if (this.editorMode){
                 for(let i = 0; i < territory.UNIT.length; ++i){
                     let unit = territory.UNIT[i];
+                    if(territory["CONVOY"] && unit["TYPE"] == "FLEET" && (this.drawAllLinks || this.selectedUnit && territoryName == this.selectedUnit.territoryName 
+                        || this.selectedUnit2 && territoryName == this.selectedUnit2.territoryName)){
+                        this.draw.drawConvoyRoute("blue", false, unit.X, unit.Y, territory.CONVOY.X, territory.CONVOY.Y);
+                    }
                     if ((this.selectedUnit && unit == this.selectedUnit.unit) || (this.selectedUnit2 && unit == this.selectedUnit2.unit)){
                         this.draw.drawUnit('gray', unit.TYPE[0], unit.X, unit.Y, false, true);
                     }else{
                         this.draw.drawUnit('gray', unit.TYPE[0], unit.X, unit.Y);
-                        if(!this.drawAllLinks) continue;
                     }
                 }
             }

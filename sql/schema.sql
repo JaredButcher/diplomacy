@@ -61,7 +61,7 @@ CREATE TABLE player (
 CREATE TABLE supplyTerritories (
     user INT NOT NULL,
     game INT NOT NULL,
-    territory VARCHAR(3) NOT NULL,
+    territory VARCHAR(30) NOT NULL,
     FOREIGN KEY (user) REFERENCES user(id),
     FOREIGN KEY (game) REFERENCES game(id) ON DELETE CASCADE
 );
@@ -69,12 +69,12 @@ CREATE TABLE unit (
     user INT NOT NULL,
     game INT NOT NULL,
     turn INT NOT NULL,
-    territory VARCHAR(3) NOT NULL,
+    territory VARCHAR(30) NOT NULL,
     type VARCHAR(2) NOT NULL,
     coast INT,
     command VARCHAR(2) NOT NULL,
-    target VARCHAR(3),
-    source VARCHAR(3),
+    target VARCHAR(30),
+    source VARCHAR(30),
     FOREIGN KEY (user) REFERENCES user(id),
     FOREIGN KEY (game) REFERENCES game(id) ON DELETE CASCADE
 );

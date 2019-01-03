@@ -297,16 +297,26 @@ document.getElementById('mapCanvas').onmousedown = (evt) => {
     if(!mouseDown){
         let rect = canvas.getBoundingClientRect();
         mouseDown = true;
+        let x = Math.round(evt.clientX - rect.left);
+        let y = Math.round(evt.clientY - rect.top);
         if(loadedMap && currentEditor == "mainEditor"){
-            let unit = loadedMap.findUnit((evt.clientX - rect.left), (evt.clientY - rect.top));
+            let unit = loadedMap.findUnit(x, y);
             selectUnit(unit, !keysDown["Shift"]);
         } else if(currentEditor == "unitConf"){
-            currentEdited.unit["X"] = (evt.clientX - rect.left);
-            currentEdited.unit["Y"] = (evt.clientY - rect.top);
-            document.getElementById("unitX").value = currentEdited.unit["X"];
-            document.getElementById("unitY").value = currentEdited.unit["Y"];
+            currentEdited.unit["X"] = x;
+            currentEdited.unit["Y"] = y;
+            document.getElementById("unitX").value = x;
+            document.getElementById("unitY").value = y;
         } else if(currentEditor == "territoryConf"){
-
+            if(keysDown["Shift"] && document.getElementById("territoryConvoy").checked){
+                currentEdited.territory["CONVOY"] = {"X": x, "Y": y};
+                document.getElementById("territoryConvoyX").value = x;
+                document.getElementById("territoryConvoyY").value = y;
+            }else if(document.getElementById("territorySupply").checked){
+                currentEdited.territory["MARKER"] = {"X": x, "Y": y};
+                document.getElementById("territoryX").value = x;
+                document.getElementById("territoryY").value = y;
+            }
         }
     }
 }
