@@ -1,7 +1,7 @@
 {"NAME":"Europe","DISCRIPTION":"The default map of Diplomacy","IMG":"/static/img/defaultMap.svg","SIZE":{"X":1000,"Y":1000},"MAX_DISTANCE":500,
 "COUNTRY":{
     "7":{
-        "AUSTRIA":{"COLOR":"#f00","TERRITORY":[["VIENNA","ARMY"],["BUDAPEST","ARMY"],["TRIESTE","FLEET"]]},
+        "AUSTRIA":{"COLOR":"#f00","TERRITORY":[]},
         "ENGLAND":{"COLOR":"#000", "TERRITORY":[]},
         "FRANCE":{"COLOR":"#000", "TERRITORY":[]},
         "GERMANY":{"COLOR":"#000", "TERRITORY":[]},

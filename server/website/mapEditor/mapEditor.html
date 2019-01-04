@@ -86,18 +86,21 @@
     <lable>Edit Countries: </lable>
     <div>
         <label>Players: </label>
-        <input type="button" value="2" name="playerCount"/>
-        <input type="button" value="3" name="playerCount"/>
-        <input type="button" value="4" name="playerCount"/>
-        <input type="button" value="5" name="playerCount"/>
-        <input type="button" value="6" name="playerCount"/>
-        <input type="button" value="7" name="playerCount"/>
-        <input type="button" value="8" name="playerCount"/>
-        <input type="button" value="9" name="playerCount"/>
+        <input type="button" class="countNotInUse" value="2" name="playerCount"/>
+        <input type="button" class="countNotInUse" value="3" name="playerCount"/>
+        <input type="button" class="countNotInUse" value="4" name="playerCount"/>
+        <input type="button" class="countNotInUse" value="5" name="playerCount"/>
+        <input type="button" class="countNotInUse" value="6" name="playerCount"/>
+        <input type="button" class="countNotInUse" value="7" name="playerCount"/>
+        <input type="button" class="countNotInUse" value="8" name="playerCount"/>
+        <input type="button" class="countNotInUse" value="9" name="playerCount"/>
     </div>
     <input type="button" value="return" id="countryConfReturn"/>
 </div>
 <div id="playerCountConf" class="editorTool" hidden>
+    <div id="playerCountConfContainer">
+
+    </div>
     <input type="button" value="Remove this player count" id="rmPlayerCount"/>
     <input type="button" value="Save this player count" id="applyPlayerCount"/>
 </div>

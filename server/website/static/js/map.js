@@ -75,7 +75,9 @@ class Map{
                     self.img.onload = () => { 
                         self.drawing = true;
                         self.drawMap();
-                        self.callback();
+                        if(self.callback){
+                            self.callback(self);
+                        }
                     };
                 }
             }
@@ -87,8 +89,10 @@ class Map{
             this.img.src = this.mapData.IMG;
             this.img.onload = () => {
                 this.drawing = true;
-                this.drawMap()
-                self.callback();
+                this.drawMap();
+                if(this.callback){
+                    this.callback(this);
+                }
             };
         }else{
             console.error("invalid type passed to Map")
@@ -278,6 +282,12 @@ class Map{
                 links.splice(i, 1);
             }
         }
+    }
+    applyCountries(count, countries){
+        this.mapData["COUNTRY"][count.toString()] = countries;
+    }
+    rmCountries(count){
+        delete this.mapData["COUNTRY"][count.toString()];
     }
 }
 export {Map, Unit};

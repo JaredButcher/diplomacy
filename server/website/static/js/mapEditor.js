@@ -24,7 +24,7 @@ let currentCPC = null;
 function readMap(evt){
     let reader = new FileReader();
     reader.onload = (file) => {
-        loadedMap = new Map(JSON.parse(file.target.result), "mapCanvas", true);
+        loadedMap = new Map(JSON.parse(file.target.result), "mapCanvas", true, loadMapCallback);
     };
     reader.readAsText(evt.target.files[0]);
 }
@@ -59,11 +59,10 @@ function refreshUnitDropdown(territorySelect, unitSelect){
         let territoryName = territorySelect.options[territorySelect.selectedIndex].value;
         let units = loadedMap.mapData["TERRITORY"][territoryName]["UNIT"];
         if(units){
-            for(let i = 0; i < units.length; ++i){
-                let unit = units[i];
+            for(let i in units){
                 let op = document.createElement("option");
                 op.value = i;
-                op.text = unit["TYPE"] + " " + i;
+                op.text = units[i]["TYPE"] + " " + i;
                 unitSelect.options.add(op);
             }
         }
@@ -129,6 +128,18 @@ function selectUnit(unit, isPrimary=true){
         }else{
             selectTer2.selectedIndex = 0;
         }
+    }
+}
+
+function loadMapCallback(map){
+    loadedMap = map;
+    refreshTerritoryDropdowns();
+    for(let elm of document.querySelectorAll(`input[name=playerCount]`)){
+        elm.classList.add("countNotInUse");
+    }
+    console.log(Object.entries(loadedMap.mapData["COUNTRY"]))
+    for(let [count, value] of Object.entries(loadedMap.mapData["COUNTRY"])){
+        document.getElementById("countryConf").querySelector(`input[name=playerCount][value="${count}"]`).classList.remove("countNotInUse");
     }
 }
 
@@ -280,7 +291,7 @@ document.getElementById("countryConfReturn").onclick = () => {
 }
 //Loads default map
 document.addEventListener('DOMContentLoaded', () => {
-    loadedMap = new Map('/static/maps/defaultMap.json', 'mapCanvas', true, refreshTerritoryDropdowns);
+    loadedMap = new Map('/static/maps/defaultMap.json', 'mapCanvas', true, loadMapCallback);
 });
 document.getElementById("saveFile").onclick = (evt) => {
     let mapData = loadedMap.getMapData();
@@ -334,32 +345,137 @@ document.addEventListener("keydown", (evt) => {
 document.addEventListener("keyup", (evt) => {
     keysDown[evt.key] = false;
 });
-let playerCountButtons = document.querySelectorAll("input[name=playerCount]");
+let exceptList = [];
+function refreshTerritoryDropdownsNoNone(exceptList){
+    let territoryDrops = document.querySelectorAll("select[name=countrySelectTerritory]");
+    for(let drop of territoryDrops){
+        drop.innerHTML = "";
+    }
+    for(let [territoryName, territory] of Object.entries(loadedMap.mapData["TERRITORY"])){
+        if(territory["MARKER"] && !exceptList.includes(territoryName)){
+            let op = document.createElement("option");
+            op.value = territoryName;
+            op.text = territoryName;
+            for(let drop of territoryDrops){
+                drop.options.add(op.cloneNode(true));
+            }
+        }
+    }
+    for(let drop of territoryDrops){
+        refreshUnitDropdownNoNone(drop, document.querySelector(`select[name=countrySelectUnit][countryId="${drop.getAttribute("countryId")}"]`));
+    }
+}
+function refreshUnitDropdownNoNone(territorySelect, unitSelect){
+    unitSelect.innerHTML = "";
+    if(territorySelect.selectedIndex != -1){
+        let territoryName = territorySelect.options[territorySelect.selectedIndex].value;
+        let units = loadedMap.mapData["TERRITORY"][territoryName]["UNIT"];
+        if(units){
+            for(let i in units){
+                let op = document.createElement("option");
+                op.value = i;
+                op.text = units[i]["TYPE"] + " " + i;
+                unitSelect.options.add(op);
+            }
+        }
+    }
+}
+function addUnit(territoryList, territoryName, unitIndex){
+    for(let node of territoryList.childNodes){
+        if(node.territoryName == territoryName){
+           node.unitIndex = unitIndex;
+           return;
+       }
+   }
+   exceptList.push(territoryName);
+   let elm = document.createElement("input");
+   elm.type="button";
+   elm.territoryName = territoryName;
+   elm.unitIndex = unitIndex;
+   elm.value = `${territoryName} ${loadedMap.mapData["TERRITORY"][territoryName]["UNIT"][unitIndex]["TYPE"]} ${unitIndex}`
+   elm.onclick = () => {
+       territoryList.removeChild(elm);
+       exceptList.splice(exceptList.indexOf(territoryName), 1);
+       refreshTerritoryDropdownsNoNone(exceptList);
+   }
+   territoryList.appendChild(elm);
+}
+let playerCountButtons = document.getElementById("countryConf").querySelectorAll("input[name=playerCount]");
 for(let button of playerCountButtons){
     button.onclick = () => {
         currentCPC = button.value;
-        let editor = document.getElementById("playerCountConf");
+        let editor = document.getElementById("playerCountConfContainer");
         for(let elm of editor.querySelectorAll("div[name=playerCountCountryConf]")){
             editor.removeChild(elm);
         }
         for(let i = 0; i < currentCPC; ++i){
-            let CPCId = "CPCId" + i;
             let inputFields = `<div name="playerCountCountryConf">
-                                    <label>Name: </label><input type="text" class="${CPCId}" name="playerCountCountryName">
-                                    <label>Color: </label><input type="text" class="${CPCId}" name="playerCountCountryColor">
-                                    <p class="${CPCId}" name="listPlayerCountUnits"></p>
+                                    <label>Name: </label><input type="text" countryId="${i}" name="playerCountCountryName">
+                                    <label>Color: </label><input type="color" countryId="${i}" name="playerCountCountryColor">
+                                    <div countryId="${i}" name="listPlayerCountUnits"></div>
                                     <label>Territory: </label>
-                                    <select class="${CPCId}" name="countrySelectTerritory">
+                                    <select countryId="${i}" name="countrySelectTerritory">
                                         <option value="temp">temp</option>
                                     </select>
-                                    <select class="${CPCId}" name="countrySelectUnit">
+                                    <select countryId="${i}" name="countrySelectUnit">
                                         <option value="temp">temp</option>
                                     </select>
-                                    <input type="button" value="Remove territory" class="${CPCId}" name="rmLinkTerritoryCountry"/>
-                                    <input type="button" value="Add territory" class="${CPCId}" name="linkTerritoryCountry"/>
+                                    <input type="button" value="Add territory" countryId="${i}" name="linkTerritoryCountry"/>
                                 </div>`
             editor.innerHTML = inputFields + editor.innerHTML;
         }
+        let territoryDrops = editor.querySelectorAll("select[name=countrySelectTerritory]");
+        for(let drop of territoryDrops){
+            drop.onchange = () => {
+                refreshUnitDropdownNoNone(drop, editor.querySelector(`select[name=countrySelectUnit][countryId="${drop.getAttribute("countryId")}"]`));
+            }
+        }
+        for(let linkButton of editor.querySelectorAll("input[name=linkTerritoryCountry]")){
+            let territoryList = editor.querySelector(`div[name=listPlayerCountUnits][countryId="${linkButton.getAttribute("countryId")}"]`);
+            let territoryDrop = editor.querySelector(`select[name=countrySelectTerritory][countryId="${linkButton.getAttribute("countryId")}"]`);
+            let unitDrop = editor.querySelector(`select[name=countrySelectUnit][countryId="${linkButton.getAttribute("countryId")}"]`);
+            linkButton.onclick = () => {
+                let territoryName = territoryDrop.options[territoryDrop.selectedIndex].value;
+                let unitIndex = unitDrop.options[unitDrop.selectedIndex].value;
+                addUnit(territoryList, territoryName, unitIndex);
+                refreshTerritoryDropdownsNoNone(exceptList);
+            }
+        }
+        let savedCountries = loadedMap.mapData["COUNTRY"][currentCPC.toString()];
+        if(savedCountries){
+            savedCountries = Object.entries(savedCountries);
+            for(let i in savedCountries){
+                let [countryName, country] = savedCountries[i];
+                editor.querySelector(`input[name=playerCountCountryName][countryId="${i}"]`).value = countryName;
+                editor.querySelector(`input[name=playerCountCountryColor][countryId="${i}"]`).value = country["COLOR"];
+                let territoryList = editor.querySelector(`div[name=listPlayerCountUnits][countryId="${i}"]`);
+                for(let [unitTerritory, unitIndex] of country["TERRITORY"]){
+                    addUnit(territoryList, unitTerritory, unitIndex);
+                }
+            }
+        }
+        refreshTerritoryDropdownsNoNone(exceptList);
         changeEditor("playerCountConf");
     }
+}
+document.getElementById("applyPlayerCount").onclick = () => {
+    document.getElementById("countryConf").querySelector(`input[name=playerCount][value="${currentCPC}"]`).classList.remove("countNotInUse");
+    let countries = {};
+    let context = document.getElementById("playerCountConf");
+    for(let name of context.querySelectorAll("input[name=playerCountCountryName]")){
+        if(name.value){
+            let territory = [];
+            for(let unit of context.querySelector(`div[name=listPlayerCountUnits][countryId="${name.getAttribute("countryId")}"]`).childNodes){
+                territory.push([unit.territoryName, unit.unitIndex]);
+            }
+            countries[name.value] = {"COLOR": context.querySelector(`input[name=playerCountCountryColor][countryId="${name.getAttribute("countryId")}"]`).value, "TERRITORY": territory};
+        }
+    }
+    loadedMap.applyCountries(currentCPC, countries);
+    changeEditor("mainEditor");
+}
+document.getElementById("rmPlayerCount").onclick = () => {
+    document.getElementById("countryConf").querySelector(`input[name=playerCount][value="${currentCPC}"]`).classList.add("countNotInUse");
+    loadedMap.rmCountries(currentCPC);
+    changeEditor("countryConf");
 }
