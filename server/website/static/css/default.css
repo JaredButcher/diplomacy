@@ -1,23 +1,65 @@
-.numberInput{
-    max-width: 50px;
+:root{
+    --mainColor: #8aa6c7;
+    --mainDark: #0054a2;
+    --mainLight: #e3eaf1;
+    --secColor: #c7ab8a;
+    --secDark: #7a5a2b;
+    --secLight: #fbeacf;
 }
-#mapEditInputContainer{
-    display: grid;
-    grid-template-columns: auto 4fr;
-    row-gap: 1px;
-    background-color: black;
+body{
+    font-family: sans-serif;
+    margin: 0px;
+    font-size: 16px;
+    background-color: var(--mainLight);
 }
-#mapEditInputContainer > label{
-    text-align: right;
-    padding-right: 5px;
+#content{
+    padding: 5px;
+    text-align: center;
+    margin: auto;
+}
+#header{
+    background-color: var(--mainColor);
+    margin: 0px;
+    padding: 6px;
+    font-size: 20px;
     font-weight: bold;
+    box-shadow: 2px 2px 6px black;
 }
-#mapEditInputContainer > *{
-    background-color: white;
+#header > a{
+    display: inline-block;
+    color: white;
+    height: 90%;
+    padding: 15px;
+    text-decoration: none;
+    border-radius: 3px;
 }
-.countNotInUse{
-    background-color: #666;
+#header > a:hover, #header > a:focus{
+    background-color: var(--mainDark);
+    box-shadow: 2px 2px 6px black;
 }
+.framed {
+    border-radius: 3px;
+    margin: 5px;
+    padding: 2px;
+    background-color: var(--secLight);
+    box-shadow: 2px 2px 6px black;
+}
+input, select, textarea{
+    border: 1px solid var(--secColor);
+    border-radius: 2px;
+    background-color: transparent;
+    font-size: inherit;
+    font-weight: inherit;
+    padding: 2px;
+    margin: 2px;
+}
+input[type=button]:hover, input[type=button]:focus, select:focus, select:hover{
+    box-shadow: 1px 1px 4px black;
+}
+input:not(input[type=radio]):focus, input:not(input[type=radio]):hover, textarea:hover, textarea:focus{
+    box-shadow: 1px 1px 4px black inset;
+}
+/*
 iframe{
     width: 100%;
     border: none;
@@ -27,4 +69,4 @@ iframe{
 }
 body{
     overflow-x: hidden;
-}
+}*/

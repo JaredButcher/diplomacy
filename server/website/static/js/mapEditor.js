@@ -335,10 +335,6 @@ document.getElementById("rmTerritory").onclick = () => {
 document.getElementById("countryConfReturn").onclick = () => {
     changeEditor("mainEditor");
 }
-//Loads default map
-document.addEventListener('DOMContentLoaded', () => {
-    loadedMap = new Map('/static/maps/defaultMap.json', 'mapCanvas', true, loadMapCallback);
-});
 document.getElementById("saveFile").onclick = (evt) => {
     let mapData = loadedMap.mapData;
     if(!mapData || !mapData.NAME){
@@ -526,3 +522,5 @@ document.getElementById("rmPlayerCount").onclick = () => {
     loadedMap.rmCountries(currentCPC);
     changeEditor("countryConf");
 }
+//Loads default map
+loadedMap = new Map('/static/maps/defaultMap.json', 'mapCanvas', true, loadMapCallback);

@@ -1,0 +1,101 @@
+<link type="text/css" href="../static/css/mapEditor.css" rel="stylesheet"/>
+<canvas class="framed" id="mapCanvas" height="1000" width="1000"></canvas>
+<div class="framed" id="editors">
+    <div id="mainEditor" class="editorTool">
+        <div>
+            <label>Map data:</label><input type="file" id="mapFile"/>
+            <input type="button" id="saveFile" value="Save File"/>
+        </div>
+        <div>
+            <input type="button" value="Create new map" id="newMap"/>
+            <input type="button" value="Edit map" id="editMap"/>
+            <input type="button" value="Edit countries" id="editCountry"/>
+            <input type="button" value="Add new territory" id="newTerritory"/>
+            <label>Show all links: </label><input type="checkbox" id="showAllLinks"/>
+        </div>
+        <div>
+            <label>Territory: </label>
+            <select id="selectTerritory">
+                <option value="temp">temp</option>
+            </select>
+            <label>Unit: </label>
+            <select id="selectUnit">
+                    <option value="temp">temp</option>
+            </select>
+            <input type="button" value="Edit territory" id="editTerritory"/>
+            <input type="button" value="Add new unit" id="newUnit"/>
+            <input type="button" value="Edit unit" id="editUnit"/>
+        </div>
+        <div>
+            <label>Territory 2: </label>
+            <select id="selectTerritory2">
+                <option value="temp">temp</option>
+            </select>
+            <label>Unit 2: </label>
+            <select id="selectUnit2">
+                    <option value="temp">temp</option>
+            </select>
+            <input type="button" value="Add new link" id="newLink"/>
+            <input type="button" value="Remove link" id="rmLink"/>
+        </div>
+    </div>
+    <div id="mapConf" class="editorTool" hidden>
+        <label>Name:</label><input type="text" id="mapName"/>
+        <label>Discription:</label><textarea id="mapDisc"></textarea>
+        <label>Img:</label><input type="url" id="mapImg"/>
+        <label>Img Size X:</label><input class="numberInput" type="number" id="mapX"/>
+        <label>Y:</label><input class="numberInput" type="number" id="mapY"/>
+        <label>Max Distance</label><input class="numberInput" type="number" id="mapMaxDistance"/>
+        <input type="button" value="Apply changes" id="applyMap"/>
+    </div>
+    <div id="territoryConf" class="editorTool" hidden>
+        <label>Name:</label><input type="text" id="territoryName"/>
+        <label>Is supply point:</label><input type="checkbox" id="territorySupply"/>
+        <label>Supply Marker X:</label><input class="numberInput" type="number" id="territoryX"/>
+        <label>Y:</label><input class="numberInput" type="number" id="territoryY"/>
+        <label>Can convoy:</label><input type="checkbox" id="territoryConvoy"/>
+        <label>Convoy point X:</label><input class="numberInput" type="number" id="territoryConvoyX"/>
+        <label>Y:</label><input class="numberInput" type="number" id="territoryConvoyY"/>
+        <input type="button" value="Remove territory" id="rmTerritory"/>
+        <input type="button" value="Apply changes" id="applyTerritory"/>
+    </div>
+    <div id="unitConf" class="editorTool" hidden>
+        <p id="unitTerritoryName">Territory: temp</p>
+        <label>Army:</label><input type="radio" value="ARMY" name="unitType"/>
+        <label>Fleet:</label><input type="radio" value="FLEET" name="unitType"/>
+        <label>Marker X:</label><input class="numberInput" type="number" id="unitX"/>
+        <label>Y:</label><input class="numberInput" type="number" id="unitY"/>
+        <label>Coast ID:</label>
+        <select id="unitCoast">
+            <option value="None">None</option>
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+        </select>
+        <input type="button" value="Remove unit" id="rmUnit"/>
+        <input type="button" value="Apply changes" id="applyUnit"/>
+    </div>
+    <div id="countryConf" class="editorTool" hidden>
+        <div>
+            <label>Players: </label>
+            <input type="button" class="countNotInUse" value="2" name="playerCount"/>
+            <input type="button" class="countNotInUse" value="3" name="playerCount"/>
+            <input type="button" class="countNotInUse" value="4" name="playerCount"/>
+            <input type="button" class="countNotInUse" value="5" name="playerCount"/>
+            <input type="button" class="countNotInUse" value="6" name="playerCount"/>
+            <input type="button" class="countNotInUse" value="7" name="playerCount"/>
+            <input type="button" class="countNotInUse" value="8" name="playerCount"/>
+            <input type="button" class="countNotInUse" value="9" name="playerCount"/>
+        </div>
+        <input type="button" value="return" id="countryConfReturn"/>
+    </div>
+    <div id="playerCountConf" class="editorTool" hidden>
+        <div id="playerCountConfContainer">
+
+        </div>
+        <input type="button" value="Remove this player count" id="rmPlayerCount"/>
+        <input type="button" value="Save this player count" id="applyPlayerCount"/>
+    </div>
+</div>
+<script type="module" src="../static/js/mapEditor.js"></script>

@@ -53,7 +53,8 @@ class USER(Enum):
     NAME = '2', 
     EMAIL = '3', 
     PHONE = '4',
-    PASSWORD = '5'
+    PASSWORD = '5',
+    SESSION = '6'
 @unique
 class PHASE(Enum):
     DIPLOMACY = '0', 

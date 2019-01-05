@@ -40,10 +40,13 @@ const ACTION = {
         //C->S GAME.TURN contains turn to view and GAME.ID contains game ID
         //S->C GAME object contains TURN, and list of all PLAYERS that each have their TERRITORIES list and UNITS list compleate with their order for that turn
     LOGIN: '8',
-        //C->S PLAYER field will contain user with username and password
+        //C->S PLAYER field will contain USER with USERNAME and PASSWORD or SAVEDLOGIN
         //S->C Response to login request, contains user info in PLAYER field if sucessful, PLAYER field not assigned if not
-    LOGOUT: '9',
-    REGISTER: '10'
+    LOGOUT: '9', //C->S nothing else contained
+    REGISTER: '10', //C->S PLAYER field will contain USER with USERNAME and PASSWORD. NAME, EMAIL, and PHONE fields are optional
+    SESSION: '11' 
+        //C->S PLAYER field will contain USER with SESSION or, if no session cookie set, PLAYER will not be set
+        //S->C PLAYER field will contain USER with user infomation or just USER with a new SESSION cookie
 }
 /**
  * Enum for errors
@@ -97,7 +100,9 @@ const USER = {
     NAME: '2', //optional
     EMAIL: '3', //optional
     PHONE: '4', //optional
-    PASSWORD: '5'
+    PASSWORD: '5',
+    SESSION: '6',
+    SAVEDLOGIN: '7'
 }
 /**
  * Enum for possable game phases

@@ -1,0 +1,18 @@
+.numberInput{
+    max-width: 50px;
+}
+.editorTool > *:not(label){
+    display: block;
+    text-align: center;
+    margin: 3px auto;
+}
+.countNotInUse{
+    background-color: #666666bb;
+}
+#editors{
+    float: left;
+    padding: 10px;
+}
+#mapCanvas{
+    float: left;
+}
