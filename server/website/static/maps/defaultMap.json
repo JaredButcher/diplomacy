@@ -1,4 +1,5 @@
-{"NAME":"Europe","DISCRIPTION":"The default map of Diplomacy","IMG":"/static/img/defaultMap.svg","SIZE":{"X":1000,"Y":1000},"MAX_DISTANCE":500,
+{"NAME":"Europe","DISCRIPTION":"The default map of Diplomacy","IMG":"/static/img/defaultMap.svg",
+    "SIZE":{"X":1000,"Y":1000},"MAX_DISTANCE":500,
 "COUNTRY":{
     "7":{
         "AUSTRIA":{"COLOR":"#f00","TERRITORY":[]},

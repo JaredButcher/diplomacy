@@ -26,6 +26,11 @@ class MapDraw{
 
     static UNIT_SIZE() {return 20;}
 
+    setCanvasSize(x, y){
+        this.canvas.width = x;
+        this.canvas.height = y;
+    }
+
     /**
      * Draws a solid arrow representing a move of a unit on canvas area
      * @param {string} color - parsed css color for line

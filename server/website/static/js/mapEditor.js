@@ -45,6 +45,16 @@ function refreshTerritoryDropdowns(){
         selectTer1.options.add(op);
         selectTer2.options.add(op.cloneNode(true));
     }
+    if(loadedMap.selectedUnit){
+        for(let i in selectTer1.options){
+            if(selectTer1.options[i].value == loadedMap.selectedUnit.territoryName){
+                selectTer1.selectedIndex = i;
+                break;
+            }
+        }
+    }
+    refreshUnitDropdown(selectTer1, selectUnit1);
+    refreshUnitDropdown(selectTer2, selectUnit2);
 }
 /**Updates the values in unit selection dropdown to match the selected territory
  * @param {object} territorySelect - The territory selector dropdown
@@ -137,18 +147,37 @@ function loadMapCallback(map){
     for(let elm of document.querySelectorAll(`input[name=playerCount]`)){
         elm.classList.add("countNotInUse");
     }
-    console.log(Object.entries(loadedMap.mapData["COUNTRY"]))
     for(let [count, value] of Object.entries(loadedMap.mapData["COUNTRY"])){
         document.getElementById("countryConf").querySelector(`input[name=playerCount][value="${count}"]`).classList.remove("countNotInUse");
     }
 }
-
+document.getElementById("applyMap").onclick = () => {
+    loadedMap.setMapSettings(
+        document.getElementById("mapName").value, 
+        document.getElementById("mapDisc").value,
+        document.getElementById("mapImg").value,
+        {"X": document.getElementById("mapX").value, "Y": document.getElementById("mapY").value},
+        document.getElementById("mapMaxDistance").value
+    );
+    changeEditor("mainEditor");
+}
 document.getElementById("editMap").onclick = () => {
+    document.getElementById("mapName").value = loadedMap.mapData["NAME"];
+    document.getElementById("mapDisc").value = loadedMap.mapData["DISCRIPTION"];
+    document.getElementById("mapImg").value = loadedMap.mapData["IMG"];
+    document.getElementById("mapX").value = loadedMap.mapData["SIZE"]["X"];
+    document.getElementById("mapY").value = loadedMap.mapData["SIZE"]["Y"];
+    document.getElementById("mapMaxDistance").value = loadedMap.mapData["MAX_DISTANCE"];
     changeEditor("mapConf");
 };
 document.getElementById("newMap").onclick = () => {
-    //TODO: create new map
-    console.warn("not implemented");
+    document.getElementById("mapName").value = "";
+    document.getElementById("mapDisc").value = "";
+    document.getElementById("mapImg").value = "";
+    document.getElementById("mapX").value = 0;
+    document.getElementById("mapY").value = 0;
+    document.getElementById("mapMaxDistance").value = 500;
+    loadedMap.newMap();
     changeEditor("mapConf");
 };
 document.getElementById("editCountry").onclick = () => {
@@ -156,6 +185,12 @@ document.getElementById("editCountry").onclick = () => {
 };
 document.getElementById("newTerritory").onclick = () => {
     currentEdited = new Unit(null, {"UNIT":[]}, null, null);
+    document.getElementById("territorySupply").checked = false;
+    document.getElementById("territoryX").value = 0;
+    document.getElementById("territoryY").value = 0;
+    document.getElementById("territoryConvoy").checked = false;
+    document.getElementById("territoryConvoyX").value = 0;
+    document.getElementById("territoryConvoyY").value = 0;
     changeEditor("territoryConf");
 };
 document.getElementById("showAllLinks").onclick = (evt) => {
@@ -165,6 +200,12 @@ document.getElementById("editTerritory").onclick = () => {
     if(loadedMap.selectedUnit){
         currentEdited = loadedMap.selectedUnit;
         document.getElementById("territoryName").value = currentEdited.territoryName;
+        document.getElementById("territorySupply").checked = false;
+        document.getElementById("territoryX").value = 0;
+        document.getElementById("territoryY").value = 0;
+        document.getElementById("territoryConvoy").checked = false;
+        document.getElementById("territoryConvoyX").value = 0;
+        document.getElementById("territoryConvoyY").value = 0;
         if(currentEdited.territory["MARKER"]){
             document.getElementById("territorySupply").checked = true;
             document.getElementById("territoryX").value = currentEdited.territory["MARKER"]["X"];
@@ -182,6 +223,10 @@ document.getElementById("newUnit").onclick = () => {
     if(loadedMap.selectedUnit){
         currentEdited = new Unit(loadedMap.selectedUnit.territoryName, loadedMap.selectedUnit.territory, null, {"TYPE":null,"X":null,"Y":null});
         document.getElementById("unitTerritoryName").innerText = "Territory: " + currentEdited.territoryName;
+        document.getElementById("unitX").value = 0;
+        document.getElementById("unitY").value = 0;
+        document.getElementById("unitCoast").selectedIndex = 0;
+
         changeEditor("unitConf");
     }
 };
@@ -207,7 +252,6 @@ document.getElementById("editUnit").onclick = () => {
         }else{
             coast.selectedIndex = 0;
         }
-
         changeEditor("unitConf");
     }
 };
@@ -294,7 +338,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadedMap = new Map('/static/maps/defaultMap.json', 'mapCanvas', true, loadMapCallback);
 });
 document.getElementById("saveFile").onclick = (evt) => {
-    let mapData = loadedMap.getMapData();
+    let mapData = loadedMap.mapData;
     if(!mapData || !mapData.NAME){
         console.error("Invalid map data");
         return;
@@ -455,6 +499,7 @@ for(let button of playerCountButtons){
             }
         }
         refreshTerritoryDropdownsNoNone(exceptList);
+        loadedMap.setDefaultCountryDraw(currentCPC);
         changeEditor("playerCountConf");
     }
 }

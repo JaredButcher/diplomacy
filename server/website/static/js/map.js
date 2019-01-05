@@ -64,12 +64,14 @@ class Map{
         this.drawAllLinks = false;
         this.callback = callback;
         this.drawing = false;
+        this.defaultCountryDraw = null;
         if(typeof(mapData) == "string"){
             var self = this;
             let req = new XMLHttpRequest();
             req.onreadystatechange = function(){
                 if(this.readyState == 4 && this.status == 200){
                     self.mapData = JSON.parse(this.responseText);
+                    self.draw.setCanvasSize(self.mapData["SIZE"]["X"], self.mapData["SIZE"]["Y"])
                     self.img = new Image();
                     self.img.src = self.mapData.IMG;
                     self.img.onload = () => { 
@@ -85,6 +87,7 @@ class Map{
             req.send();
         }else if(typeof(mapData) == "object"){
             this.mapData = mapData;
+            this.draw.setCanvasSize(this.mapData["SIZE"]["X"], this.mapData["SIZE"]["Y"])
             this.img = new Image();
             this.img.src = this.mapData.IMG;
             this.img.onload = () => {
@@ -97,9 +100,6 @@ class Map{
         }else{
             console.error("invalid type passed to Map")
         }
-    }
-    getMapData(){
-        return this.mapData;
     }
     /**
      * Draw map
@@ -118,22 +118,41 @@ class Map{
             }
         }
         for(let [territoryName, territory] of Object.entries(this.mapData["TERRITORY"])){
+            let coloringCountry = null;
+            let coloringUnit = null;
+            if(this.defaultCountryDraw && this.mapData["COUNTRY"][this.defaultCountryDraw]){
+                for(let [na,country] of Object.entries(this.mapData["COUNTRY"][this.defaultCountryDraw])){
+                    for(let [countryTerritory, unitIndex] of country["TERRITORY"]){
+                        if(countryTerritory == territoryName){
+                            coloringCountry = country;
+                            coloringUnit = unitIndex;
+                            break;
+                        }
+                    }
+                    if(coloringCountry) break;
+                }
+            }
             //Draw supply points
             if(territory["MARKER"]){
-                this.draw.drawDot('black', territory.MARKER.X, territory.MARKER.Y)
+                let color = 'black';
+                if(coloringCountry) color = coloringCountry["COLOR"];
+                this.draw.drawDot(color, territory.MARKER.X, territory.MARKER.Y)
             }
             //Draw units
             if (this.editorMode){
                 for(let i = 0; i < territory.UNIT.length; ++i){
                     let unit = territory.UNIT[i];
+                    //Draw convoy point and rounte
                     if(territory["CONVOY"] && unit["TYPE"] == "FLEET" && (this.drawAllLinks || this.selectedUnit && territoryName == this.selectedUnit.territoryName 
                         || this.selectedUnit2 && territoryName == this.selectedUnit2.territoryName)){
                         this.draw.drawConvoyRoute("blue", false, unit.X, unit.Y, territory.CONVOY.X, territory.CONVOY.Y);
                     }
+                    let color = 'gray';
+                    if(coloringCountry && coloringUnit == i) color = coloringCountry["COLOR"];
                     if ((this.selectedUnit && unit == this.selectedUnit.unit) || (this.selectedUnit2 && unit == this.selectedUnit2.unit)){
-                        this.draw.drawUnit('gray', unit.TYPE[0], unit.X, unit.Y, false, true);
+                        this.draw.drawUnit(color, unit.TYPE[0], unit.X, unit.Y, false, true);
                     }else{
-                        this.draw.drawUnit('gray', unit.TYPE[0], unit.X, unit.Y);
+                        this.draw.drawUnit(color, unit.TYPE[0], unit.X, unit.Y);
                     }
                 }
             }
@@ -159,6 +178,12 @@ class Map{
                     }
                     if(Math.sqrt((x-unit.X)**2 + (y-unit.Y)**2) <= MapDraw.UNIT_SIZE()){
                         return new Unit(territoryName, territory, i, unit);
+                    }
+                }
+                let marker = territory["MARKER"]
+                if(marker){
+                    if(Math.sqrt((x-marker.X)**2 + (y-marker.Y)**2) <= MapDraw.UNIT_SIZE()){
+                        return new Unit(territoryName, territory, null, null);
                     }
                 }
             }
@@ -283,11 +308,60 @@ class Map{
             }
         }
     }
+    /**Saves config for given player count, overrideing previous values
+     * @param {number | String} count - player count mode to override
+     * @param {Object} countries - settings to override with
+     */
     applyCountries(count, countries){
         this.mapData["COUNTRY"][count.toString()] = countries;
     }
+    /**Removes given player count mode
+     * @param {number | String} count - player count mode to remove
+     */
     rmCountries(count){
         delete this.mapData["COUNTRY"][count.toString()];
+    }
+    /**Will draw the default units and supply points for the speicided mode there respective color
+     * @param {number | String} playerCount - player count mode to use 
+     */
+    setDefaultCountryDraw(playerCount){
+        this.defaultCountryDraw = playerCount;
+    }
+    /**Save the settings of the map
+     * @param {String} name - name of map
+     * @param {String} discription - map discription
+     * @param {String} img - URL of image for map
+     * @param {Object} size - object containing X and Y size of image
+     * @param {Number} maxDistance - max distance between units in territory, lower values accerate draw
+     */
+    setMapSettings(name, discription, img, size, maxDistance){
+        if(img != this.mapData.IMG){
+            this.drawing = false;
+            this.draw.clear();
+            if(img){
+                this.img = new Image();
+                this.img.src = img;
+                this.img.onload = () => {
+                    this.drawing = true;
+                    this.drawMap();
+                };
+            }
+        }
+        this.mapData.NAME = name;
+        this.mapData.DISCRIPTION = discription;
+        this.mapData.IMG = img;
+        this.mapData.SIZE = size;
+        this.MAX_DISTANCE = maxDistance;
+    }
+    newMap(){
+        this.mapData = {
+            "SIZE": {},
+            "COUNTRY": [],
+            "TERRITORY": [],
+            "LINK": []
+        };
+        this.drawing = false;
+        this.draw.clear();
     }
 }
 export {Map, Unit};
