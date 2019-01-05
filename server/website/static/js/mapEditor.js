@@ -231,7 +231,7 @@ document.getElementById("newUnit").onclick = () => {
     }
 };
 document.getElementById("editUnit").onclick = () => {
-    if(loadedMap.selectedUnit){
+    if(loadedMap.selectedUnit && loadedMap.selectedUnit.unit){
         currentEdited = loadedMap.selectedUnit;
         document.getElementById("unitTerritoryName").innerText = "Territory: " + currentEdited.territoryName;
         for(let elm of document.getElementsByName("unitType")){
@@ -300,12 +300,14 @@ selectUnit2.onchange = (evt) => {
     selectUnit(new Unit(territoryName, territory, evt.target.value, territory["UNIT"][evt.target.value]), false);
 };
 document.getElementById("newLink").onclick = () => {
-    if(loadedMap.selectedUnit && loadedMap.selectedUnit2){
+    if(loadedMap.selectedUnit && loadedMap.selectedUnit2 && loadedMap.selectedUnit.unit && loadedMap.selectedUnit2.unit 
+        && (loadedMap.selectedUnit.unitIndex != loadedMap.selectedUnit2.unitIndex || loadedMap.selectedUnit.territoryName != loadedMap.selectedUnit2.territoryName)){
         loadedMap.addNewLink(loadedMap.selectedUnit, loadedMap.selectedUnit2);
     }
 };
 document.getElementById("rmLink").onclick = () => {
-    if(loadedMap.selectedUnit && loadedMap.selectedUnit2){
+    if(loadedMap.selectedUnit && loadedMap.selectedUnit2 && loadedMap.selectedUnit.unit && loadedMap.selectedUnit2.unit 
+        && (loadedMap.selectedUnit.unitIndex != loadedMap.selectedUnit2.unitIndex || loadedMap.selectedUnit.territoryName != loadedMap.selectedUnit2.territoryName)){
         loadedMap.rmLink(loadedMap.selectedUnit, loadedMap.selectedUnit2);
     }
 };
