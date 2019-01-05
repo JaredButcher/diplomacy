@@ -4,7 +4,7 @@
     "7":{
         "AUSTRIA":{"COLOR":"#f00","TERRITORY":[]},
         "ENGLAND":{"COLOR":"#000", "TERRITORY":[]},
-        "FRANCE":{"COLOR":"#000", "TERRITORY":[]},
+        "FRANCE":{"COLOR":"#66ffff", "TERRITORY":[["PARIS", 0]]},
         "GERMANY":{"COLOR":"#000", "TERRITORY":[]},
         "ITALY":{"COLOR":"#000", "TERRITORY":[]},
         "RUSSIA":{"COLOR":"#000", "TERRITORY":[]},
@@ -31,7 +31,7 @@
 "MUNICH":{"UNIT":[]},
 "NAPLES":{"UNIT":[]},
 "NORWAY":{"UNIT":[]},
-"PARIS":{"UNIT":[]},
+"PARIS":{"MARKER":{"X":353,"Y":586}, "UNIT":[{"TYPE":"ARMY","X":382,"Y":581}]},
 "PORTUGAL":{"UNIT":[]},
 "ROME":{"UNIT":[]},
 "RUMANIA":{"UNIT":[]},
@@ -39,7 +39,7 @@
 "SERBI":{"UNIT":[]},
 "SEVASTOPOL":{"UNIT":[]},
 "SMYRNA":{"UNIT":[]},
-"SPAIN":{"MARKER":{"X":195,"Y":730},"UNIT":[{"TYPE":"ARMY","X":255,"Y":705},{"TYPE":"FLEET","COAST":0,"X":215,"Y":664},{"TYPE":"FLEET","COAST":1,"X":265,"Y":800}]},
+"SPAIN":{"MARKER":{"X":195,"Y":730},"UNIT":[{"TYPE":"ARMY","X":255,"Y":705},{"TYPE":"FLEET","COAST":0,"X":215,"Y":664},{"TYPE":"FLEET","COAST":1,"X":271,"Y":814}]},
 "SWEDEN":{"UNIT":[]},
 "TRIESTE":{"UNIT":[]},
 "TUNIS":{"UNIT":[]},
@@ -50,7 +50,7 @@
 "YORKSHIRE":{"UNIT":[]},
 "WALES":{"UNIT":[]},
 "PICARDY":{"UNIT":[]},
-"GASCONY":{"UNIT":[]},
+"GASCONY":{"UNIT":[{"TYPE":"ARMY","X":320,"Y":672}, {"TYPE":"FLEET","X":290,"Y":651}]},
 "BURGUNDY":{"UNIT":[]},
 "NORTH_AFRICA":{"UNIT":[]},
 "RUHR":{"UNIT":[]},
@@ -69,7 +69,7 @@
 "ARMENIA":{"UNIT":[]},
 "SYRIA":{"UNIT":[]},
 "NORTH_ATLANTIC":{"UNIT":[]},
-"MID_ATLANTIC":{"CONVOY":{"X":38,"Y":668},"UNIT":[{"TYPE":"FLEET","X":100,"Y":664}]},
+"MID_ATLANTIC":{"CONVOY":{"X":38,"Y":668},"UNIT":[{"TYPE":"FLEET","X":71,"Y":576}]},
 "NORWEIGIAN_SEA":{"UNIT":[]},
 "NORTH_SEA":{"UNIT":[]},
 "ENGLISH_CHANNEL":{"UNIT":[]},
@@ -88,5 +88,12 @@
 "EAST_MEDITERRANEAN":{"UNIT":[]},
 "BLACK_SEA":{"UNIT":[]}
 },
-"LINK":[[["MID_ATLANTIC",0],["SPAIN",1]]]
+"LINK":[
+    [["MID_ATLANTIC",0],["SPAIN",1]],
+    [["MID_ATLANTIC",0],["SPAIN",2]],
+    [["MID_ATLANTIC",0],["GASCONY",1]],
+    [["GASCONY",1],["SPAIN",1]],
+    [["GASCONY",0],["SPAIN",0]],
+    [["GASCONY",0],["PARIS",0]]
+]
 }

@@ -22,9 +22,9 @@ class MapDraw{
 
     static CONVOY_SQUIGLE_WIDTH() {return 20;}
 
-    static LINE_WIDTH() {return 8;}
+    static LINE_WIDTH() {return 6;}
 
-    static UNIT_SIZE() {return 20;}
+    static UNIT_SIZE() {return 14;}
 
     setCanvasSize(x, y){
         this.canvas.width = x;
