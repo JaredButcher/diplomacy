@@ -1,5 +1,4 @@
 import websocketServer
-import httpServer
 import protocol
 
 def recHandle(client, message):
@@ -7,4 +6,3 @@ def recHandle(client, message):
         
 
 ws = websocketServer.websocketServer(4543, recHandle)
-httpServer.start(4242, 2)

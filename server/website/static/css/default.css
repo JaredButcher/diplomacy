@@ -18,3 +18,13 @@
 .countNotInUse{
     background-color: #666;
 }
+iframe{
+    width: 100%;
+    border: none;
+    padding: 0px;
+    margin: 0px;
+    overflow: hidden;
+}
+body{
+    overflow-x: hidden;
+}

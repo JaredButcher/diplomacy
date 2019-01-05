@@ -347,6 +347,7 @@ class Map{
                 };
             }
         }
+        this.draw.setCanvasSize(size["X"],size["Y"]);
         this.mapData.NAME = name;
         this.mapData.DISCRIPTION = discription;
         this.mapData.IMG = img;
@@ -362,6 +363,7 @@ class Map{
         };
         this.drawing = false;
         this.draw.clear();
+        this.draw.setCanvasSize(0,0);
     }
 }
 export {Map, Unit};
