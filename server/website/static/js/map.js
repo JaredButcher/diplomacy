@@ -5,7 +5,7 @@
  */
 
 import * as PROTOCOL from "./protocol.js";
-import {WsClient} from "./wsClient.js";
+import {WsClient} from "./WsClient.js";
 import {MapDraw} from "./mapDraw.js";
 
 /* map keywords

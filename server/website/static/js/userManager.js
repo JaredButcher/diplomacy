@@ -4,7 +4,7 @@
  * @module diplomacy/userManager
  */
 
-import { WsClient, WS_PORT } from "./wsClient.js";
+import { WsClient, WS_PORT } from "./WsClient.js";
 import * as PROTOCOL from "./protocol.js";
 import { setCookie } from "./cookies.js";
 
