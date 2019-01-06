@@ -1,6 +1,6 @@
 let req = new XMLHttpRequest();
 req.onreadystatechange = function(){
-    if(this.readyState == 4 && this.status == 200){
+    if(this.readyState == 4 && this.status == 200 || this.status == 404){
         let content = document.getElementById("content")
         content.innerHTML = this.responseText;
         for(let script of document.getElementById("content").querySelectorAll("script")){

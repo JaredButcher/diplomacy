@@ -40,7 +40,7 @@ const ACTION = {
         //C->S GAME.TURN contains turn to view and GAME.ID contains game ID
         //S->C GAME object contains TURN, and list of all PLAYERS that each have their TERRITORIES list and UNITS list compleate with their order for that turn
     LOGIN: '8',
-        //C->S PLAYER field will contain USER with USERNAME and PASSWORD or SAVEDLOGIN
+        //C->S PLAYER field will contain USER with USERNAME and PASSWORD and SAVEDLOGIN or SAVEDLOGIN
         //S->C Response to login request, contains user info in PLAYER field if sucessful, PLAYER field not assigned if not
     LOGOUT: '9', //C->S nothing else contained
     REGISTER: '10', //C->S PLAYER field will contain USER with USERNAME and PASSWORD. NAME, EMAIL, and PHONE fields are optional
@@ -55,7 +55,8 @@ const ACTION = {
  */
 const ERROR = {
     BAD_REQUEST: '0', //Request was malformed or unaccepted
-    AUTH_REQUIRED: '1' //User is not authenicated, send to login page
+    AUTH_REQUIRED: '1', //User is not authenicated, send to login page
+    USERNAME_TAKEN: '2' //When registering username was taken
 }
 /**
  * Enum for game object

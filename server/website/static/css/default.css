@@ -53,11 +53,18 @@ input, select, textarea{
     padding: 2px;
     margin: 2px;
 }
+input:not([type=radio]):focus, input:not([type=radio]):hover, textarea:hover, textarea:focus{
+    box-shadow: 1px 1px 4px black inset;
+}
 input[type=button]:hover, input[type=button]:focus, select:focus, select:hover{
     box-shadow: 1px 1px 4px black;
 }
-input:not(input[type=radio]):focus, input:not(input[type=radio]):hover, textarea:hover, textarea:focus{
-    box-shadow: 1px 1px 4px black inset;
+.downLine{
+    display: grid;
+    text-align: right;
+    width: 400px;
+    margin: auto;
+    grid-template-columns: auto auto;
 }
 /*
 iframe{

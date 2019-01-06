@@ -10,7 +10,7 @@ const WS_PORT = 4543;
 const wsClients = [];
 
 /** Class that creates and handles a websocket connection*/
-class wsClient{
+class WsClient{
     /**
      * Creates a connection and client
      * @param {string} ip - server address
@@ -70,7 +70,7 @@ class wsClient{
                 return wsClients[i];
             }
         }
-        return new wsClient(ip, port, responseCallback);
+        return new WsClient(ip, port, responseCallback);
     }
     /**
      * Send to server
@@ -116,4 +116,4 @@ class wsClient{
 * @param {string} blobURI - if message is blob then URI of blob
 */
 
-export {wsClient, WS_PORT};
+export {WsClient, WS_PORT};
