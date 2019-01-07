@@ -4,29 +4,32 @@
  * @module diplomacy/userManager
  */
 
-import { WsClient, WS_PORT } from "./WsClient.js";
+import { WsClient, WS_PORT } from "./wsClient.js";
 import * as PROTOCOL from "./protocol.js";
-import { setCookie } from "./cookies.js";
+import { setCookie, getCookie } from "./cookies.js";
 
 let REMEMBER_MAX_AGE = 30;
+let user = {};
 
 /**
  * Login user
  * @param {string} username 
  * @param {string} password
- * @returns {Object} was login sucessful returns player object, unscessful return null
+ * @returns {object} was login sucessful, return user object, otherwise false
  */
 function login(username, password){
-    ws = WsClient.obtainWsClient(window.location.hostname, WS_PORT, (message) => {
-        if(!isBlob && message[PROTOCOL.FIELD.ACTION] == PROTOCOL.ACTION.LOGIN){
+    let ws = WsClient.obtainWsClient(window.location.hostname, WS_PORT, (message) => {
+        if(message[PROTOCOL.FIELD.ACTION] == PROTOCOL.ACTION.LOGIN){
+            console.log(this);
             if(message.hasOwnProperty(PROTOCOL.FIELD.PLAYER)){
-                return message[PROTOCOL.FIELD.PLAYER];
+                setUserInfo(message[PROTOCOL.FIELD.PLAYER])
+                return user;
             }else{
-                return null;
+                return false;
             }
         }
     });
-    req = {};
+    let req = {};
     req[PROTOCOL.FIELD.ACTION] = PROTOCOL.ACTION.LOGIN;
     req[PROTOCOL.FIELD.PLAYER] = {};
     req[PROTOCOL.FIELD.PLAYER][PROTOCOL.USER.USERNAME] = username;
@@ -44,7 +47,7 @@ function login(username, password){
  * @returns {Object} was registration sucessful returns player object, otherwise returns the error code
  */
 function makeAccount(username, password, name=null, phone=null, email=null){
-    ws = WsClient.obtainWsClient(window.location.hostname, WS_PORT, (message) => {
+    let ws = WsClient.obtainWsClient(window.location.hostname, WS_PORT, (message) => {
         if(messagereq[PROTOCOL.FIELD.ACTION] == PROTOCOL.ACTION.LOGIN){
             if(message.hasOwnProperty(PROTOCOL.FIELD.PLAYER)){
                 return message[PROTOCOL.FIELD.PLAYER];
@@ -53,7 +56,7 @@ function makeAccount(username, password, name=null, phone=null, email=null){
             }
         }
     });
-    req = {};
+    let req = {};
     req[PROTOCOL.FIELD.ACTION] = PROTOCOL.ACTION.REGISTER;
     req[PROTOCOL.FIELD.PLAYER] = {};
     req[PROTOCOL.FIELD.PLAYER][PROTOCOL.USER.USERNAME] = username;
@@ -68,12 +71,21 @@ function makeAccount(username, password, name=null, phone=null, email=null){
  * logout the currently loged in user
  */
 function logout(){
-    ws = WsClient.obtainWsClient(window.location.hostname, WS_PORT);
-    req = {};
+    let ws = WsClient.obtainWsClient(window.location.hostname, WS_PORT);
+    let req = {};
     req[PROTOCOL.FIELD.ACTION] = PROTOCOL.ACTION.LOGOUT;
     ws.send(req);
+    setUserInfo({});
 }
 
+function setUserInfo(userInfo){
+    user[PROTOCOL.USER.ID] = userInfo[PROTOCOL.USER.ID];
+    user[PROTOCOL.USER.USERNAME] = userInfo[PROTOCOL.USER.USERNAME];
+    user[PROTOCOL.USER.NAME] = userInfo[PROTOCOL.USER.NAME];
+    user[PROTOCOL.USER.PHONE] = userInfo[PROTOCOL.USER.PHONE];
+    user[PROTOCOL.USER.EMAIL] = userInfo[PROTOCOL.USER.EMAIL];
+    user[PROTOCOL.USER.SAVEDLOGIN] = userInfo[PROTOCOL.USER.SAVEDLOGIN];
+}
 
 if(window.location.pathname == "/user/login"){
     document.getElementById("login").onclick = () => {
@@ -115,3 +127,6 @@ if(window.location.pathname == "/user/register"){
         }
     }
 }
+window.login = login;
+
+export{login, logout, makeAccount, setUserInfo};

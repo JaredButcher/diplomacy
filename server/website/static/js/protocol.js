@@ -45,8 +45,8 @@ const ACTION = {
     LOGOUT: '9', //C->S nothing else contained
     REGISTER: '10', //C->S PLAYER field will contain USER with USERNAME and PASSWORD. NAME, EMAIL, and PHONE fields are optional
     SESSION: '11' 
-        //C->S PLAYER field will contain USER with SESSION or, if no session cookie set, PLAYER will not be set
-        //S->C PLAYER field will contain USER with user infomation or just USER with a new SESSION cookie
+        //C->S PLAYER field will contain PLAYER with session or, if no session cookie set, PLAYER will not be set
+        //S->C PLAYER field will contain PLAYER with USER infomation or just PLAYER with a new SESSION cookie or unset of valid session but no user
 }
 /**
  * Enum for errors

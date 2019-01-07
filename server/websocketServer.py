@@ -2,6 +2,9 @@ import asyncio
 import websockets
 import threading
 import json
+import protocol
+from session import Session
+import UserDatabase
 
 contentLocation = "server/website/"
 
@@ -48,6 +51,7 @@ class websocketServer:
             client.send(message)
         
     async def _handleConn(self, conn, uri):
+        print("Conn created")
         client = websocketClient(conn, self._receiveEvent, self)
         self.clients.append(client)
         await client.beginReceiveLoop()
@@ -60,6 +64,8 @@ class websocketClient:
     def __init__(self, conn, receiveEvent, socketServer):
         self._conn = conn
         self._alive = True
+        self._open = False
+        self._session = None
         self._receiveEvent = receiveEvent
         self._socketServer = socketServer
     async def beginReceiveLoop(self):
@@ -67,21 +73,60 @@ class websocketClient:
             try:
                 message = await self._conn.recv()
             except websockets.exceptions.ConnectionClosed:
+                print("Closed")
                 self.destory()
                 return
             if message != "":
                 try:
                     message = json.loads(message)
+                    print("REC:")
+                    print(message)
                 except ValueError:
+                    print("invalid message")
                     return
-            self._receiveEvent(self, message)
-    def send(self, message, isBlob=False):
+            else:
+                print("empty message")
+                return
+            if(not protocol.FIELD.ACTION.value in message):
+                print(type(message))
+                print(message['0'])
+                print(message[protocol.FIELD.ACTION.value])
+                print("actionless message")
+                return
+            if self._open:
+                self._receiveEvent(self, message)
+            else:
+                if(message[protocol.FIELD.ACTION.value] == protocol.ACTION.SESSION.value):
+                    self._open = True;
+                    res = {}
+                    res[protocol.FIELD.ACTION.value] = protocol.ACTION.SESSION.value
+                    if protocol.FIELD.PLAYER.value in message:
+                        self._session = Session.findSession(message[protocol.FIELD.PLAYER.value])
+                        if self._session:
+                            userId = self._session.getUserId()
+                            if not userId is None:
+                                user = UserDatabase.findUser(id=userId)
+                                if len(user) == 1:
+                                    sendUser = {}
+                                    sendUser[protocol.USER.ID.value] = user["id"]
+                                    sendUser[protocol.USER.USERNAME.value] = user["username"]
+                                    sendUser[protocol.USER.NAME.value] = user["name"]
+                                    sendUser[protocol.USER.EMAIL.value] = user["email"]
+                                    sendUser[protocol.USER.PHONE.value] = user["phone"]
+                                    res[protocol.FIELD.PLAYER.value] = sendUser
+                    if self._session == None:
+                        self._session = Session()
+                        res[protocol.FIELD.PLAYER.value] = {}
+                        res[protocol.FIELD.PLAYER.value][protocol.USER.SESSION.value] = self._session.getKey()
+                    self.send(res)
+                    
+    def send(self, message):
         '''Asyncinously sends a message to this client.
 
         Args:
             message (string or dict): message to be sent
         '''
-        if type(message) is dict and not isBlob:
+        if type(message) is dict:
             message = json.dumps(message)
         try:
             asyncio.run_coroutine_threadsafe(self._conn.send(message), self._socketServer.loop)
