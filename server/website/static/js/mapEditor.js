@@ -523,4 +523,4 @@ document.getElementById("rmPlayerCount").onclick = () => {
     changeEditor("countryConf");
 }
 //Loads default map
-loadedMap = new Map('/static/maps/defaultMap.json', 'mapCanvas', true, loadMapCallback);
+loadedMap = new Map('/static/maps/Europe.json', 'mapCanvas', true, loadMapCallback);

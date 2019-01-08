@@ -33,7 +33,7 @@ class GAME(Enum):
     PLAYERS = '2' 
     TURN = '3' 
     TIMER_START = '4' 
-    TIMER_DURATIONS = '5' 
+    TIMER_DURATION = '5' 
     CURRENT_PHASE = '6'
     MAX_PLAYERS = '7'
     NAME = '8'
@@ -58,6 +58,7 @@ class USER(Enum):
     PASSWORD = '5'
     SESSION = '6'
     REMEMBER = '7'
+    NEWPASSWORD = '8'
 @unique
 class PHASE(Enum):
     DIPLOMACY = '0' 

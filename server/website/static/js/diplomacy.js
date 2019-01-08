@@ -7,7 +7,7 @@
 import * as map from './map.js';
 import {MapDraw} from './mapDraw.js';
 
-let gameMap = new map.Map('/static/maps/defaultMap.json', 'gameCanvas');
+let gameMap = new map.Map('/static/maps/Europe.json', 'gameCanvas');
 
 //Arrow draw test
 

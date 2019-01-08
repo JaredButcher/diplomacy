@@ -4,7 +4,7 @@ import * as protocol from "./protocol.js";
 document.getElementById("register").onclick = () => {
     let password = document.getElementById("password").value
     if(password == document.getElementById("passwordCheck").value){
-        makeAccount(document.getElementById("username").value, password, document.getElementById("name"), document.getElementById("phone"), document.getElementById("email")).then((user) => {
+        makeAccount(document.getElementById("username").value, password, document.getElementById("name").value, document.getElementById("phone").value, document.getElementById("email").value).then((user) => {
             window.location.replace("/");
         }, (error) => {
             if(error == protocol.ERROR.USERNAME_TAKEN){

@@ -1,0 +1,20 @@
+<h3>Make new game:</h3>
+<canvas class="framed left" id="mapCanvas" height="1000" width="1000"></canvas>
+<div id="editorContainer">
+    <div class="framed downLine">
+        <lable>Map:</lable><select id="selectMap">
+            <option id="Europe">Europe</option>
+        </select>
+        <input class="spanButton" type="button" value="LOAD MAP" id="loadMap">
+    </div>
+    <div class="framed downLine" id="gameConf">
+        <lable>Player Count:</lable><select id="playerCount">
+        </select>
+        <label>Game name:</label><input type="text" id="gameName">
+        <lable>Optional password:</lable><input type="text" id="gamePassword">
+        <lable>Phase Length (min):</lable><input type="number" min="1" max="50000" value="1" id="phaseLength">
+        <input class="spanButton" type="button" value="CREATE GAME" id="createGame">
+    </div>
+    <h4 id="errorMessage"hidden></h4>
+</div>
+<script type="module" src="/static/js/makeGame.js"></script>

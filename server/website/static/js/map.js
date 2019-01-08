@@ -139,21 +139,25 @@ class Map{
                 this.draw.drawDot(color, territory.MARKER.X, territory.MARKER.Y)
             }
             //Draw units
-            if (this.editorMode){
-                for(let i = 0; i < territory.UNIT.length; ++i){
-                    let unit = territory.UNIT[i];
-                    //Draw convoy point and rounte
+            for(let i = 0; i < territory.UNIT.length; ++i){
+                let unit = territory.UNIT[i];
+                //Draw convoy point and rounte
+                if (this.editorMode){
                     if(territory["CONVOY"] && unit["TYPE"] == "FLEET" && (this.drawAllLinks || this.selectedUnit && territoryName == this.selectedUnit.territoryName 
                         || this.selectedUnit2 && territoryName == this.selectedUnit2.territoryName)){
                         this.draw.drawConvoyRoute("blue", false, unit.X, unit.Y, territory.CONVOY.X, territory.CONVOY.Y);
                     }
-                    let color = 'gray';
+                }
+                let color = 'gray';
+                if (this.editorMode){
                     if(coloringCountry && coloringUnit == i) color = coloringCountry["COLOR"];
                     if ((this.selectedUnit && unit == this.selectedUnit.unit) || (this.selectedUnit2 && unit == this.selectedUnit2.unit)){
                         this.draw.drawUnit(color, unit.TYPE[0], unit.X, unit.Y, false, true);
                     }else{
                         this.draw.drawUnit(color, unit.TYPE[0], unit.X, unit.Y);
                     }
+                }else if(coloringCountry && coloringUnit == i){
+                    this.draw.drawUnit(coloringCountry["COLOR"], unit.TYPE[0], unit.X, unit.Y);
                 }
             }
         }

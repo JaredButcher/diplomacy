@@ -22,11 +22,15 @@ const FIELD = {
  * @enum {string}
  */
 const ACTION = {
-    JOIN: '0', //C->S GAME field contains object with ID of game to join and optional PASSWORD
+    JOIN: '0', 
+        //C->S GAME field contains object with ID of game to join and optional PASSWORD
+        //S->C Sent on failed join game request, ERROR will contain an ERROR code
     QUIT: '1', //C->S GAME field contains id of game to leave
-    CREATE_GAME: '2', //C->S GAME field contains object with the TIMER_DURATIONS object, MAX_PLAYERS, NAME, MAP, and optional PASSWORD
+    CREATE_GAME: '2', 
+        //C->S GAME field contains object with the TIMER_DURATION, MAX_PLAYERS, NAME, MAP, and optional PASSWORD, PASSWORD not set if no password
+        //S->C Sent on failed create game request, ERROR will contain an ERROR code
     UPDATE: '3',
-        //C->S if game is set change game parameters, if player is set either player parameteres are to be changed or orders are being sent or the session id is being sent
+        //C->S if game is set change game parameters, if player is set either player parameteres are to be changed or orders are being sent
             //NOTE: id of playing making commands is not sent, it is known on server by session
         //S->C Update of gamestate from server some, all, or none of the game, player, unit, etc... infomation may be changed
     CHAT: '4',
@@ -69,7 +73,7 @@ const GAME = {
     PLAYERS: '2', //Either list of players or
     TURN: '3', //Current turn or turn to look back on
     TIMER_START: '4', //When current phase started
-    TIMER_DURATIONS: '5', //Object with the timer duration of each phase, object of PHASE
+    TIMER_DURATION: '5', //timer duration fo turns
     CURRENT_PHASE: '6',
     MAX_PLAYERS: '7',
     NAME: '8',
@@ -103,7 +107,8 @@ const USER = {
     PHONE: '4', //optional
     PASSWORD: '5',
     SESSION: '6',
-    SAVEDLOGIN: '7'
+    SAVEDLOGIN: '7',
+    NEWPASSWORD: '8'//only used for updating password
 }
 /**
  * Enum for possable game phases

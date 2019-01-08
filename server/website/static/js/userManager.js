@@ -9,6 +9,7 @@ import * as PROTOCOL from "./protocol.js";
 import { setCookie, getCookie, rmCookie } from "./cookies.js";
 
 let user = {};
+let userUpdateEvent = new Event("userUpdate");
 
 /**
  * Login user
@@ -90,6 +91,33 @@ function logout(){
     setUserInfo({});
 }
 
+function modifyUser(username, password, newPasswrd=null, name=null, phone=null, email=null){
+    return new Promise((resolve, reject) => {
+        let ws = WsClient.obtainWsClient(window.location.hostname, WS_PORT, (message) => {
+            if(message[PROTOCOL.FIELD.ACTION] == PROTOCOL.ACTION.LOGIN){
+                ws.removeResponseCallback();
+                if(message.hasOwnProperty(PROTOCOL.FIELD.PLAYER)){
+                    setUserInfo(message[PROTOCOL.FIELD.PLAYER]);
+                    resolve(message[PROTOCOL.FIELD.PLAYER]);
+                }else{
+                    reject(message[PROTOCOL.FIELD.ERROR]);
+                }
+            }
+        });
+        let req = {};
+        req[PROTOCOL.FIELD.ACTION] = PROTOCOL.ACTION.UPDATE;
+        req[PROTOCOL.FIELD.PLAYER] = {};
+        req[PROTOCOL.FIELD.PLAYER][PROTOCOL.USER.ID] = user[PROTOCOL.USER.ID];
+        req[PROTOCOL.FIELD.PLAYER][PROTOCOL.USER.USERNAME] = username;
+        req[PROTOCOL.FIELD.PLAYER][PROTOCOL.USER.NAME] = name;
+        req[PROTOCOL.FIELD.PLAYER][PROTOCOL.USER.PHONE] = phone;
+        req[PROTOCOL.FIELD.PLAYER][PROTOCOL.USER.EMAIL] = email;
+        req[PROTOCOL.FIELD.PLAYER][PROTOCOL.USER.PASSWORD] = password;
+        req[PROTOCOL.FIELD.PLAYER][PROTOCOL.USER.NEWPASSWORD] = newPasswrd;
+        ws.send(req);
+    });
+}
+
 function establishSession(){
     WsClient.obtainWsClient(window.location.hostname, WS_PORT);
 }
@@ -102,18 +130,19 @@ function setUserInfo(userInfo={}){
     user[PROTOCOL.USER.EMAIL] = userInfo[PROTOCOL.USER.EMAIL];
     user[PROTOCOL.USER.SAVEDLOGIN] = userInfo[PROTOCOL.USER.SAVEDLOGIN];
     document.getElementById("headAccountButton").style.display = user[PROTOCOL.USER.ID] == undefined ? "none" : "inline-block";
-    document.getElementById("headAccountButton").innerText = user[PROTOCOL.USER.USERNAME];
+    document.getElementById("headAccountButton").innerText = user[PROTOCOL.USER.USERNAME] == undefined ? "" : user[PROTOCOL.USER.USERNAME].toUpperCase();
     document.getElementById("headMakeGameButton").style.display = user[PROTOCOL.USER.ID] == undefined ? "none" : "inline-block";
     document.getElementById("headMyGamesButton").style.display = user[PROTOCOL.USER.ID] == undefined ? "none" : "inline-block";
     document.getElementById("headRegisterButton").style.display = user[PROTOCOL.USER.ID] != undefined ? "none" : "inline-block";
     document.getElementById("headLoginButton").style.display = user[PROTOCOL.USER.ID] != undefined ? "none" : "inline-block";
     document.getElementById("headLogoutButton").style.display = user[PROTOCOL.USER.ID] == undefined ? "none" : "inline-block";
+    document.dispatchEvent(userUpdateEvent);
 }
 
 function getUserInfo(){
-    return userInfop;
+    return user;
 }
 
 document.getElementById("headLogoutButton").onclick = logout;
 
-export{login, logout, makeAccount, setUserInfo, getUserInfo, establishSession};
+export{login, logout, makeAccount, setUserInfo, getUserInfo, establishSession, modifyUser};
