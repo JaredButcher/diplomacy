@@ -1,5 +1,5 @@
-import {makeAccount} from "./userManager.js";
-import * as protocol from "./protocol.js";
+import {makeAccount} from "../js/userManager.js";
+import * as protocol from "../js/protocol.js";
 
 document.getElementById("register").onclick = () => {
     let password = document.getElementById("password").value

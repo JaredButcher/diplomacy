@@ -1,6 +1,6 @@
-import {login} from "./userManager.js";
-import {setCookie} from "./cookies.js";
-import * as protocol from "./protocol.js";
+import {login} from "../js/userManager.js";
+import {setCookie} from "../js/cookies.js";
+import * as protocol from "../js/protocol.js";
 
 let REMEMBER_MAX_AGE = 30;
 

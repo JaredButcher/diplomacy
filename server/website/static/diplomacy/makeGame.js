@@ -1,7 +1,7 @@
-import {Map} from "./map.js";
-import {getUserInfo} from "./userManager.js";
-import * as PROTOCOL from "./protocol.js";
-import {WsClient, WS_PORT} from "./wsClient.js";
+import {Map} from "../js/map.js";
+import {getUserInfo} from "../js/userManager.js";
+import * as PROTOCOL from "../js/protocol.js";
+import {WsClient, WS_PORT} from "../js/wsClient.js";
 
 let mapSelect = document.getElementById("selectMap");
 let canvas = document.getElementById("mapCanvas");

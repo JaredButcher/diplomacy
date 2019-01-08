@@ -47,6 +47,19 @@ def recHandle(client, message):
         #Remove the remember cookie if it is given
         if protocol.FIELD.PLAYER.value in message:
             userDB.rmRemember(message[protocol.FIELD.PLAYER.value])
+    elif message[protocol.FIELD.ACTION.value] == protocol.ACTION.LIST_GAMES.value:
+        res = {}
+        res[protocol.FIELD.ACTION.value] = protocol.ACTION.LIST_GAMES.value
+        game = {}
+        game[protocol.GAME.ID.value] = 53
+        game[protocol.GAME.NAME.value] = "GAME NAME"
+        game[protocol.GAME.OWNER.value] = "JEFF"
+        game[protocol.GAME.MAX_PLAYERS.value] = 7
+        game[protocol.GAME.PLAYERS.value] = 4
+        game[protocol.GAME.MAP.value] = "NOT EUROPE"
+        game[protocol.GAME.TURN.value] = 3
+        res[protocol.FIELD.GAME.value] = [game]
+        client.send(res)
 
 
 

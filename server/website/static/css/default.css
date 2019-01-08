@@ -61,6 +61,7 @@ input[type=button]:hover, input[type=button]:focus, select:focus, select:hover{
 }
 .downLine{
     display: grid;
+    margin: auto;
     text-align: right;
     width: 400px;
     grid-template-columns: auto auto;
@@ -70,6 +71,9 @@ input[type=button]:hover, input[type=button]:focus, select:focus, select:hover{
 }
 .left{
     float: left;
+}
+p{
+    margin: 4px;
 }
 /*
 iframe{

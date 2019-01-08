@@ -30,15 +30,15 @@ const ACTION = {
         //C->S GAME field contains object with the TIMER_DURATION, MAX_PLAYERS, NAME, MAP, and optional PASSWORD, PASSWORD not set if no password
         //S->C Sent on failed create game request, ERROR will contain an ERROR code
     UPDATE: '3',
-        //C->S if game is set change game parameters, if player is set either player parameteres are to be changed or orders are being sent
+        //C->S if game is set change game paramers, if player is set either player parameteres are to be changed or orders are being sent
             //NOTE: id of playing making commands is not sent, it is known on server by session
         //S->C Update of gamestate from server some, all, or none of the game, player, unit, etc... infomation may be changed
     CHAT: '4',
         //C->S CHAT field contains MESSAGE and optional RECIPIENT
         //S->C CHAT field contains MESSAGE, RECIPIENT is set if it was a PM, PLAYER field contains ID of sender
     LIST_GAMES: '5',
-        //C->S request list of aviable games
-        //S->C GAME field contains list of aviable games that are objects containing ID, OWNER, PLAYERS as number of players, MAX_PLAYERS, NAME, and PASSWORD is set if there is a password
+        //C->S request list of aviable games, GAME FIELD will be set as a string with a search value / if PLAYER is set to true to return list of all games the user is a part of
+        //S->C GAME field contains list of aviable games that are objects containing ID, OWNER, PLAYERS as number of players, MAX_PLAYERS, NAME, MAP, TURN, and PASSWORD is set to true if there is a password
     ERROR: '6', //Error code
     VIEW_GAME: '7', 
         //C->S GAME.TURN contains turn to view and GAME.ID contains game ID

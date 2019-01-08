@@ -1,5 +1,5 @@
-import {modifyUser, getUserInfo} from "./userManager.js";
-import * as PROTOCOL from "./protocol.js";
+import {modifyUser, getUserInfo} from "../js/userManager.js";
+import * as PROTOCOL from "../js/protocol.js";
 
 document.getElementById("apply").onclick = () => {
     let password = document.getElementById("password").value
