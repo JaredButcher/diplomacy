@@ -7,10 +7,14 @@
     <body style="overflow: visible; overflow-x: visible;">
         <div id="header">
             <a href="/home/index">HOME</a>
-            <a href="/diplomacy/diplomacy">DIPLOMACY</a>
+            <a hidden href="/diplomacy/makeGame" id="headMakeGameButton">MAKE GAME</a>
+            <a href="/diplomacy/searchGame">FIND GAME</a>
+            <a hidden href="/diplomacy/myGames" id="headMyGamesButton">MY GAMES</a>
             <a href="/diplomacy/mapEditor">MAP EDITOR</a>
-            <a style="float:right" href="/user/register">REGISTER</a>
-            <a style="float:right" href="/user/login">LOGIN</a>
+            <a style="float:right" href="/user/register" id="headRegisterButton">REGISTER</a>
+            <a style="float:right" href="/user/login" id="headLoginButton">LOGIN</a>
+            <a hidden style="float:right" id="headLogoutButton">LOGOUT</a>
+            <a hidden style="float:right" href="/user/account" id="headAccountButton"></a>
         </div>
         <div id="content"></div>
     </body>

@@ -1,3 +1,5 @@
+import {establishSession, setUserInfo} from "./userManager.js";
+
 let req = new XMLHttpRequest();
 req.onreadystatechange = function(){
     if(this.readyState == 4 && this.status == 200 || this.status == 404){
@@ -10,18 +12,10 @@ req.onreadystatechange = function(){
             content.removeChild(script);
             content.appendChild(elm);
         }
+        establishSession();
     }
 }
 if(window.location.pathname == "/") window.location.pathname = "home/index";
 req.open("GET", `../static${window.location.pathname}.html`, true);
 req.send();
-/*if(window.location.pathname == "/") window.location.pathname = "home/index";
-document.getElementById("content").src = `${window.location.origin}/static${window.location.pathname}.html`;
-document.getElementById("content").onload = (evt) => {
-    evt.target.style.height = `${evt.target.contentWindow.document.body.scrollHeight}px`;
-    let thing = evt.target;
-    console.log(evt.target.contentWindow.document.body)
-    evt.target.contentWindow.document.body.onresize = () => {
-        thing.style.height = `${thing.contentWindow.document.body.scrollHeight}px`;
-    }
-}*/
+setUserInfo();

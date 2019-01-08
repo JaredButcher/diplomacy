@@ -24,6 +24,8 @@ class WsClient{
         this.responseCallback = [];
         this.sendQueue = [];
         this.open = false;
+        this.removeCurrentCallback = false;
+        wsClients.push(this);
         if(responseCallback){
             this.addResponseCallback(responseCallback);
         }
@@ -46,6 +48,13 @@ class WsClient{
             console.log("received")
             console.log(message)
             if(self.open){
+                for(let i = self.responseCallback.length - 1; i >= 0; --i){
+                    self.responseCallback[i](message);
+                    if(self.removeCurrentCallback){
+                        self.responseCallback.splice(i, 1);
+                    }
+                    self.removeCurrentCallback = false;
+                }
                 self.responseCallback.forEach(callback => {
                     callback(message);
                 });   
@@ -58,7 +67,7 @@ class WsClient{
                         setCookie("session", message[PROTOCOL.FIELD.PLAYER][PROTOCOL.USER.SESSION], 1);
                         let remember = getCookie("remember");
                         if(remember){
-                            req = {};
+                            let req = {};
                             req[PROTOCOL.FIELD.ACTION] = PROTOCOL.ACTION.LOGIN;
                             req[PROTOCOL.FIELD.PLAYER] = {};
                             req[PROTOCOL.FIELD.PLAYER][PROTOCOL.USER.SAVEDLOGIN] = remember;
@@ -66,6 +75,7 @@ class WsClient{
                                 if(message[PROTOCOL.FIELD.ACTION] == PROTOCOL.ACTION.LOGIN){
                                     if(message[PROTOCOL.FIELD.PLAYER]){
                                         setUserInfo(message[PROTOCOL.FIELD.PLAYER]);
+                                        self.removeResponseCallback();
                                     }
                                 }
                             });
@@ -102,7 +112,7 @@ class WsClient{
      */
     static obtainWsClient(ip, port, responseCallback){
         for(let i = 0; i < wsClients.length; ++i){
-            if(wsClients[i].ip == ip && wsClients[i].port == port){
+            if(wsClients[i].ip == ip && wsClients[i].port == port && wsClients[i].conn.readyState < 2){
                 wsClients[i].addResponseCallback(responseCallback);
                 return wsClients[i];
             }
@@ -113,6 +123,7 @@ class WsClient{
         if(typeof(message) != "string"){
             message = JSON.stringify(message);
         }
+        console.log("SEND:")
         console.log(message)
         this.conn.send(message);
     }
@@ -122,9 +133,8 @@ class WsClient{
      */
     send(message){
         if(this.open){
-            this.conn.send(message);
+            this._send(message);
         }else{
-            console.log("push")
             this.sendQueue.push(message);
         }
     }
@@ -136,16 +146,10 @@ class WsClient{
         this.responseCallback.push(responseCallback);
     }
     /**
-     * Removes a callback for received messages once, if duplicates exist they will not be removed
-     * @param {responseCallback} responseCallback] - callback to remove
+     * Removes the currently executing callback once complete
      */
-    removeResponseCallback(responseCallback){
-        for(let i = 0; i < this.responseCallback.length; ++i){
-            if(this.responseCallback[i] == responseCallback){
-                this.responseCallback.splice(i, 1);
-                return;
-            }
-        }
+    removeResponseCallback(){
+        this.removeCurrentCallback = true;
     }
     /**
      * Closes the websocket

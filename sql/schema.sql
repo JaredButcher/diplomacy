@@ -1,7 +1,7 @@
 CREATE TABLE user (
     id INT NOT NULL AUTO_INCREMENT,
     username VARCHAR(32) NOT NULL,
-    hash CHAR(32) NOT NULL,
+    hash CHAR(128) NOT NULL,
     salt CHAR(32) NOT NULL,
     power INT NOT NULL DEFAULT 0,
     name VARCHAR(64),

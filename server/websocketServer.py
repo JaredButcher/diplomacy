@@ -78,9 +78,9 @@ class websocketClient:
                 return
             if message != "":
                 try:
-                    message = json.loads(message)
                     print("REC:")
                     print(message)
+                    message = json.loads(message)
                 except ValueError:
                     print("invalid message")
                     return
@@ -105,8 +105,10 @@ class websocketClient:
                         if self._session:
                             userId = self._session.getUserId()
                             if not userId is None:
-                                user = UserDatabase.findUser(id=userId)
+                                userDB = UserDatabase.UserDatabase()
+                                user = userDB.findUser(id=userId)
                                 if len(user) == 1:
+                                    user = user[0]
                                     sendUser = {}
                                     sendUser[protocol.USER.ID.value] = user["id"]
                                     sendUser[protocol.USER.USERNAME.value] = user["username"]
@@ -129,6 +131,8 @@ class websocketClient:
         if type(message) is dict:
             message = json.dumps(message)
         try:
+            print("SEND:")
+            print(message)
             asyncio.run_coroutine_threadsafe(self._conn.send(message), self._socketServer.loop)
         except websockets.exceptions.ConnectionClosed:
             self.destory()
@@ -138,5 +142,7 @@ class websocketClient:
         self._alive = False
         self._socketServer.clients.remove(self)
         self._conn.close()
+    def getSession(self):
+        return self._session
     
             

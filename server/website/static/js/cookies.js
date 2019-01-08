@@ -48,7 +48,7 @@ function setCookie(name, value, days){
  * @param {String} name - Name of cookie to remove
  */
 function rmCookie(name){
-    document.cookie = `${name}=; Max-Age=-9999999;`;
+    document.cookie = `${name}=; Max-Age=-9999999; path=/`;
 }
 
 export {getCookie, setCookie, rmCookie};

@@ -24,7 +24,8 @@ class ACTION(Enum):
 @unique
 class ERROR(Enum):
     BAD_REQUEST = '0' 
-    AUTH_REQUIRED = '1' 
+    AUTH_REQUIRED = '1'
+    USERNAME_TAKEN = '2'
 @unique
 class GAME(Enum):
     ID = '0'

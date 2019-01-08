@@ -11,18 +11,19 @@ class UserDatabase(DatabaseConn.DatabaseConn):
     def _hash(self, password, salt):
         '''Compute the password hash
         '''
-        return hashlib.sha512(bytes(password, 'utf-8') + salt.to_bytes(16, byteorder='big')).hexdigest()
+        return hashlib.sha512(bytes(password, 'utf-8') + salt.encode('utf-8')).hexdigest()
     
     @DatabaseConn.connect
     def addUser(self, username, password, name=None, email=None, phone=None):
         '''Add a new user to the database
         '''
-        if len(self.findUser(username=username)) > 0:
-            raise usernameTaken('Username already in use')
+        if self.findUser(username=username):
+            return False
         query='INSERT INTO user (username, hash, salt, name, email, phone) VALUES (%s, %s, %s, %s, %s, %s);'
-        salt = secrets.randbits(128)
+        salt = format(secrets.randbits(128), 'x')
         hash = self._hash(password, salt)
-        self._cursor.execute(query, username, hash, salt, name, email, phone)
+        self._cursor.execute(query, (username, hash, salt, name, email, phone))
+        return True
 
     @DatabaseConn.connect
     def findUser(self, like=False, **kwargs):
@@ -37,7 +38,7 @@ class UserDatabase(DatabaseConn.DatabaseConn):
                 tuples contain key and value
                 [id(int), hash(string), salt(string), username(string), name(string), email(string), phone(string)]
         '''
-        query='SELECT * FROM users WHERE TRUE'
+        query='SELECT * FROM user WHERE TRUE'
         values = []
         for key in kwargs:
             if not key in ['id', 'username', 'name', 'email', 'phone']:
@@ -59,11 +60,13 @@ class UserDatabase(DatabaseConn.DatabaseConn):
                 [tuple] tuples contain key and value on success
                     [id(int), hash(string), salt(string), username(string), name(string), email(string), phone(string)]
         '''
-        user = self.findUser(username=username)[0]
-        if user['hash'] == self._hash(password, user['salt']):
-            return user
-        else:
-            return False
+        user = self.findUser(username=username)
+        print(user)
+        if user:
+            user = user[0]
+            if user['hash'] == self._hash(password, user['salt']):
+                return user
+        return False
 
     @DatabaseConn.connect
     def removeUser(self, id):
@@ -93,7 +96,7 @@ class UserDatabase(DatabaseConn.DatabaseConn):
                 query += ','
             if key == 'username' and len(self.findUser(username=kwargs['username'])) > 0:
                 raise usernameTaken('Username already in use')
-            if key == 'password':
+            elif key == 'password':
                 salt = secrets.randbits(128)
                 values.append(salt)
                 values.append(self._hash(kwargs['password'], salt))
@@ -112,7 +115,7 @@ class UserDatabase(DatabaseConn.DatabaseConn):
 
             Returns: (int) the cookie to be used
         '''
-        key = secrets.randbits(128)
+        key = format(secrets.randbits(128), 'x')
         query = 'INSERT INTO rememberUser (user, cookie) VALUES (%s, %s);'
         self._cursor.execute(query, (id, key))
         return key
@@ -128,11 +131,25 @@ class UserDatabase(DatabaseConn.DatabaseConn):
                 tuples contain key and value for user upown success
                 [id(int), hash(string), salt(string), username(string), name(string), email(string), phone(string)]
         '''
-        query = 'DELETE FROM rememberUser WHERE created < SUBDATE(CURDATE(), INTERVAL ' + self.REMEMBER_USER_DURATION + ' DAY);'
+        query = 'DELETE FROM rememberUser WHERE created < SUBDATE(CURDATE(), INTERVAL ' + str(self.REMEMBER_USER_DURATION) + ' DAY);'
         self._cursor.execute(query)
         query = 'SELECT * FROM user WHERE id IN (SELECT user FROM rememberUser WHERE cookie = %s);'
         self._cursor.execute(query, (key,))
-        return self._cursor.fetchall()
+        user = self._cursor.fetchall()
+        if user:
+            user = user[0]
+        return user
+
+    @DatabaseConn.connect
+    def rmRemember(self, key):
+        '''Removes given remember user cookie
+
+            Args:
+                key (int): remember user cookie
+        '''
+        print("RM cookie")
+        query = 'DELETE FROM rememberUser WHERE cookie = %s;'
+        self._cursor.execute(query, (key,))
 
 
 

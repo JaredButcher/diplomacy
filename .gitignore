@@ -109,3 +109,4 @@ out/*
 
 server/nginx/
 !server/nginx/conf/nginx.conf
+server/diplomacySecrets.py
