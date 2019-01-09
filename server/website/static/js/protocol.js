@@ -14,7 +14,7 @@ const FIELD = {
     GAME: '1', //Can contain a game object or list of game objects
     PLAYER: '2', //Can contain player object or play id or user
     ERROR: '3', //Contains error
-    CHAT: '4' //Contains chat object
+    CHAT: '4',//Contains chat object
 }
 /**
  * Enum for request actions

@@ -4,7 +4,7 @@
  * @module diplomacy/mapEditor
  */
 
-import {Map, Unit} from './map.js';
+import {Map, Unit} from '../js/map.js';
 
 let loadedMap = null;
 let canvas = document.getElementById("mapCanvas");
