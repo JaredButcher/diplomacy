@@ -1,2 +1,24 @@
-<canvas id="gameCanvas" height="1000" width="1000"></canvas>
-<script type="module" src="../static/js/diplomacy.js"></script>
+<canvas class="framed" id="mapCanvas" height="1000" width="1000"></canvas>
+<div class="framed" id="gameInfo">
+    <p id="gameName"></p>
+    <p id="gameYear"></p>
+    <p id="gamePhase"></p>
+    <p id="gameTimer"></p>
+    <input type="button" id="leaveGame">
+</div>
+<div class="framed" id="publicChatContainer">
+    <div id="publicChatMessages"></div>
+    <input type="text" id="publicChatInput">
+</div>
+<div class="framed" id="playerContainer">
+    <div id="playerList"></div>
+    <div id="privateChatContainer" hidden>
+        <div id="privateChatMessages"></div>
+        <input type="text" id="publicChatInput">
+    </div>
+</div>
+<div class="framed" id="gameInterface">
+    <div id="moveList"></div>
+    <input type="button" id="gameReady">
+</div>
+<script type="module" src="../static/diplomacy/game.js"></script>

@@ -41,7 +41,7 @@ const ACTION = {
         //S->C GAME field contains list of aviable games that are objects containing ID, OWNER, PLAYERS as number of players, MAX_PLAYERS, NAME, MAP, TURN, and PASSWORD is set to true if there is a password
     ERROR: '6', //Error code
     VIEW_GAME: '7', 
-        //C->S GAME.TURN contains turn to view and GAME.ID contains game ID
+        //C->S GAME.TURN contains turn to view, null for most recent turn and GAME.ID contains game ID
         //S->C GAME object contains TURN, and list of all PLAYERS that each have their TERRITORIES list and UNITS list compleate with their order for that turn
     LOGIN: '8',
         //C->S PLAYER field will contain USER with USERNAME and PASSWORD and SAVEDLOGIN or SAVEDLOGIN
@@ -89,7 +89,7 @@ const GAME = {
  */
 const PLAYER = {
     USER: '0', //Object of USER or 0 if just a placeholder player
-    COUNTRY: '1', //[] Country or contries player represents
+    COUNTRY: '1', //Country player represents
     UNITS: '2', //List of unit objects
     TERRITORIES: '3', //List of supply centers held and only supply centers
     READY: '4' //Specifies that player is ready for game to start or next turn
@@ -128,11 +128,11 @@ const PHASE = {
  */
 const UNIT = { //Units are identifed by the territory they are located in
     TYPE: '0', //Army or fleet
-    LOCATION: '1', //Territory unit is in
-    COAST: '2', //Only used for territories that have multiple coasts (ex: Spain), labled sequentaily starting with North = 0 then traveling clockwise
+    TERRITORY: '1', //Territory unit is in
+    INDEX: '2', //Unit index of territory
     ORDER: '3', //Order to follow
     TARGET: '4', //Target territory order has target 
-    SOURCE: '5' //Location of related unit for some support and convoy commands
+    SEC_TARGET: '5' //Location of related unit for some support and convoy commands
 }
 /**
  * Enum for game unit types
@@ -162,7 +162,9 @@ const ORDER = { //No order means hold
  */
 const CHAT = {
     MESSAGE: '0',
-    RECIPIENT: '1' //C->S optional PM, S->C set if was PM
+    RECIPIENT: '1', //C->S optional PM, S->C set if was PM
+    TIMESTAMP: '2', //S->C only
+    READ: '3' //S->C only, set to false if it hasn't been read yet
 }
 
 export {FIELD, ACTION, ERROR, GAME, PLAYER, USER, PHASE, UNIT, UNIT_TYPE, ORDER, CHAT};

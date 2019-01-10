@@ -4,7 +4,7 @@
  * @module diplomacy/mapEditor
  */
 
-import {Map, Unit} from '../js/map.js';
+import {Map, Unit, DISPLAYMODE} from '../js/map.js';
 
 let loadedMap = null;
 let canvas = document.getElementById("mapCanvas");
@@ -24,7 +24,7 @@ let currentCPC = null;
 function readMap(evt){
     let reader = new FileReader();
     reader.onload = (file) => {
-        loadedMap = new Map(JSON.parse(file.target.result), "mapCanvas", true, loadMapCallback);
+        loadedMap = new Map(JSON.parse(file.target.result), "mapCanvas", DISPLAYMODE.EDITOR, loadMapCallback);
     };
     reader.readAsText(evt.target.files[0]);
 }
@@ -194,7 +194,7 @@ document.getElementById("newTerritory").onclick = () => {
     changeEditor("territoryConf");
 };
 document.getElementById("showAllLinks").onclick = (evt) => {
-    loadedMap.setDrawAllLinks(evt.path[0].checked);
+    loadedMap.setDisplayMode(evt.path[0].checked ? DISPLAYMODE.ALL : DISPLAYMODE.EDITOR);
 };
 document.getElementById("editTerritory").onclick = () => {
     if(loadedMap.selectedUnit){
@@ -523,4 +523,4 @@ document.getElementById("rmPlayerCount").onclick = () => {
     changeEditor("countryConf");
 }
 //Loads default map
-loadedMap = new Map('/static/maps/Europe.json', 'mapCanvas', true, loadMapCallback);
+loadedMap = new Map('/static/maps/Europe.json', 'mapCanvas', DISPLAYMODE.EDITOR, loadMapCallback);

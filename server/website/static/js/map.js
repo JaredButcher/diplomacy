@@ -48,20 +48,26 @@ class Unit{
     }
 }
 
+const DISPLAYMODE = {
+    GAME: 0,
+    EDITOR: 1,
+    ALL: 2,
+    DEFAULTS: 3
+}
+
 class Map{
     /**
      * Create and manage game map
      * @param {string | object} mapData - url to json file containing map infomation or object containing map data
      * @param {string} canvas - id of canvas to draw map on
-     * @param {bool} editorMode - will dispaly all connections and positions
+     * @param {DISPLAYMODE} displayMode - the mode to display in
      * @param {function} callback - called after map is finished loading
      */
-    constructor(mapData, canvas, editorMode=false, callback=null){
-        this.editorMode = editorMode;
+    constructor(mapData, canvas, displayMode, callback=null){
         this.draw = new MapDraw(canvas);
         this.selectedUnit = null;
         this.selectedUnit2 = null;
-        this.drawAllLinks = false;
+        this.displayMode = displayMode;
         this.callback = callback;
         this.drawing = false;
         this.defaultCountryDraw = null;
@@ -110,7 +116,7 @@ class Map{
         //Draw links
         for(let i = 0; i < this.mapData["LINK"].length; ++i){
             let link = this.mapData["LINK"][i];
-            if(this.drawAllLinks || this.selectedUnit && (link[0][0] == this.selectedUnit.territoryName && this.selectedUnit.territory["UNIT"][link[0][1]] == this.selectedUnit.unit 
+            if(this.displayMode == DISPLAYMODE.ALL || this.selectedUnit && (link[0][0] == this.selectedUnit.territoryName && this.selectedUnit.territory["UNIT"][link[0][1]] == this.selectedUnit.unit 
             || link[1][0] == this.selectedUnit.territoryName && this.selectedUnit.territory["UNIT"][link[1][1]] == this.selectedUnit.unit)){
                 let unit1 = this.mapData["TERRITORY"][link[0][0]]["UNIT"][link[0][1]];
                 let unit2 = this.mapData["TERRITORY"][link[1][0]]["UNIT"][link[1][1]];
@@ -120,7 +126,7 @@ class Map{
         for(let [territoryName, territory] of Object.entries(this.mapData["TERRITORY"])){
             let coloringCountry = null;
             let coloringUnit = null;
-            if(this.defaultCountryDraw && this.mapData["COUNTRY"][this.defaultCountryDraw]){
+            if((this.displayMode == DISPLAYMODE.DEFAULTS  || this.defaultCountryDraw) && this.mapData["COUNTRY"][this.defaultCountryDraw]){
                 for(let [na,country] of Object.entries(this.mapData["COUNTRY"][this.defaultCountryDraw])){
                     for(let [countryTerritory, unitIndex] of country["TERRITORY"]){
                         if(countryTerritory == territoryName){
@@ -142,14 +148,12 @@ class Map{
             for(let i = 0; i < territory.UNIT.length; ++i){
                 let unit = territory.UNIT[i];
                 //Draw convoy point and rounte
-                if (this.editorMode){
+                let color = 'gray';
+                if (this.displayMode == DISPLAYMODE.EDITOR || this.displayMode == DISPLAYMODE.ALL){
                     if(territory["CONVOY"] && unit["TYPE"] == "FLEET" && (this.drawAllLinks || this.selectedUnit && territoryName == this.selectedUnit.territoryName 
                         || this.selectedUnit2 && territoryName == this.selectedUnit2.territoryName)){
                         this.draw.drawConvoyRoute("blue", false, unit.X, unit.Y, territory.CONVOY.X, territory.CONVOY.Y);
                     }
-                }
-                let color = 'gray';
-                if (this.editorMode){
                     if(coloringCountry && coloringUnit == i) color = coloringCountry["COLOR"];
                     if ((this.selectedUnit && unit == this.selectedUnit.unit) || (this.selectedUnit2 && unit == this.selectedUnit2.unit)){
                         this.draw.drawUnit(color, unit.TYPE[0], unit.X, unit.Y, false, true);
@@ -203,8 +207,11 @@ class Map{
     secSelectUnit(unit){
         this.selectedUnit2 = unit;
     }
-    setDrawAllLinks(doDraw){
-        this.drawAllLinks = doDraw;
+    /**Change the display mode of this map
+     * @param {DISPLAYMODE} mode - mode to display in
+     */
+    setDisplayMode(mode){
+        this.displayMode = mode;
     }
     /**Adds new link between the selected units, will not add repeat link
      * @param {Unit} unit1
@@ -370,4 +377,4 @@ class Map{
         this.draw.setCanvasSize(0,0);
     }
 }
-export {Map, Unit};
+export {Map, Unit, DISPLAYMODE};

@@ -45,6 +45,7 @@ CREATE TABLE privateChat (
     receiver INT NOT NULL,
     message TEXT NOT NULL,
     timestamp TIMESTAMP NOT NULL,
+    beenRead BOOLEAN NOT NULL DEFAULT FALSE,
     FOREIGN KEY (sender) REFERENCES user(id),
     FOREIGN KEY (receiver) REFERENCES user(id)
 );

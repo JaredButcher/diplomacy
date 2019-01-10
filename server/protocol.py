@@ -68,11 +68,11 @@ class PHASE(Enum):
 @unique
 class UNIT(Enum): 
     TYPE = '0' 
-    LOCATION = '1' 
-    COAST = '2' 
+    TERRITORY = '1' 
+    INDEX = '2' 
     ORDER = '3' 
     TARGET = '4' 
-    SOURCE = '5' 
+    SEC_TARGET = '5' 
 @unique
 class UNIT_TYPE(Enum):
     Army = '0'
@@ -88,3 +88,5 @@ class ORDER(Enum):
 class CHAT(Enum):
     MESSAGE = '0'
     RECIPIENT = '1' 
+    TIMESTAMP ='2'
+    READ ='3'

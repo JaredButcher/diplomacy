@@ -1,4 +1,4 @@
-import {Map} from "../js/map.js";
+import {Map, DISPLAYMODE} from "../js/map.js";
 import {getUserInfo} from "../js/userManager.js";
 import * as PROTOCOL from "../js/protocol.js";
 import {WsClient, WS_PORT} from "../js/wsClient.js";
@@ -13,7 +13,7 @@ let password = document.getElementById("gamePassword");
 let error = document.getElementById("errorMessage");
 let map = null;
 document.getElementById("loadMap").onclick = () => {
-    map = new Map(`../static/maps/${mapSelect.options[mapSelect.selectedIndex].value}.json`, "mapCanvas", false, (newMap) => {
+    map = new Map(`../static/maps/${mapSelect.options[mapSelect.selectedIndex].value}.json`, "mapCanvas", DISPLAYMODE.DEFAULTS, (newMap) => {
         canvas.style.display = "initial";
         gameConf.style.display = "grid";
         playerSelect.innerHTML = "";
