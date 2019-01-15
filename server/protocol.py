@@ -41,6 +41,7 @@ class GAME(Enum):
     MAP = '10'
     PASSWORD = '11' 
     PAUSE = '12' 
+    CHAT = '13'
 @unique
 class PLAYER(Enum):
     USER = '0' 
@@ -90,3 +91,4 @@ class CHAT(Enum):
     RECIPIENT = '1' 
     TIMESTAMP ='2'
     READ ='3'
+    

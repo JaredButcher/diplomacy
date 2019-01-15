@@ -80,7 +80,8 @@ const GAME = {
     WINNERS: '9',
     MAP: '10',
     PASSWORD: '11', //Optioanl field, if set on server list then password is required
-    PAUSE: '12' //By setting this field the game can be paused, value > 0 for timed pause (minutes), else to unpause
+    PAUSE: '12', //By setting this field the game can be paused, value > 0 for timed pause (minutes), else to unpause
+    CHAT: '13' //[] Game specific chat
 }
 /**
  * Enum for player object

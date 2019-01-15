@@ -32,22 +32,16 @@ CREATE TABLE game (
     FOREIGN KEY (winner) REFERENCES user(id),
     PRIMARY KEY (id)
 );
-CREATE TABLE gameChat (
+CREATE TABLE chat (
     sender INT NOT NULL,
-    game INT NOT NULL,
-    message TEXT NOT NULL,
-    timestamp TIMESTAMP NOT NULL,
-    FOREIGN KEY (sender) REFERENCES user(id),
-    FOREIGN KEY (game) REFERENCES game(id) ON DELETE CASCADE
-);
-CREATE TABLE privateChat (
-    sender INT NOT NULL,
-    receiver INT NOT NULL,
+    receiver INT,
+    game INT,
     message TEXT NOT NULL,
     timestamp TIMESTAMP NOT NULL,
     beenRead BOOLEAN NOT NULL DEFAULT FALSE,
     FOREIGN KEY (sender) REFERENCES user(id),
-    FOREIGN KEY (receiver) REFERENCES user(id)
+    FOREIGN KEY (sender) REFERENCES user(id),
+    FOREIGN KEY (game) REFERENCES game(id) ON DELETE CASCADE
 );
 CREATE TABLE player (
     user INT NOT NULL,

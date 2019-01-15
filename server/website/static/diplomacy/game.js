@@ -21,12 +21,33 @@ let ws = WsClient.obtainWsClient(window.location.hostname, WS_PORT, (message) =>
             map = new Map(gameInfo[PROTOCOL.GAME.MAP], "gameCanvas", DISPLAYMODE.GAME, (newMap) => {
 
             });
+            document.getElementById("gameName").innerText = gameInfo[PROTOCOL.GAME.NAME];
+            let turn = gameInfo[PROTOCOL.GAME.TURN];
+            document.getElementById("gameYear").innerText = `${(turn % 2 == 0)? "Spring" : "Fall"} ${1901 + Math.floor(turn / 2)}`;
+            let phase = "";
+            switch(gameInfo[PROTOCOL.GAME.CURRENT_PHASE]){
+                case PROTOCOL.PHASE.DIPLOMACY:
+                    phase = "Diplomacy";
+                break;
+                case PROTOCOL.PHASE.RETREAT:
+                    phase = "Retreat and Disband";
+                break;
+                case PROTOCOL.PHASE.ADJUST:
+                    phase = "Gaining and Losing Units";
+                break;
+                case PROTOCOL.PHASE.DIPLOMACY:
+                    phase = "Game Over";
+                break;
+            }
+            document.getElementById("gamePhase").innerText = phase;
         break;
         case PROTOCOL.ACTION.CHAT:
         break;
         case PROTOCOL.ACTION.UPDATE:
         break;
         case PROTOCOL.ACTION.JOIN:
+        break;
+        case PROTOCOL.ACTION.CHAT:
         break;
     }
 });
